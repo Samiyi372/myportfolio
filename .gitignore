@@ -1,0 +1,14 @@
+# Large binary design files
+*.psd
+*.ai
+*.tmp
+*.mp4
+*.m4a
+
+# Reference/personal materials
+参考素材/
+个人信息/
+
+# OS
+.DS_Store
+Thumbs.db
