@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>交互设计 · 黄稚恬</title>
+<link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@500&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#f8f6f0;color:#2e2416;min-height:100vh;}
+
+/* ── Nav ── */
+#copy-toast{
+  position:fixed;z-index:10001;
+  background:rgb(112,109,100);color:#f8f6f0;
+  font-family:"Huiwen-Fangsong","汇文仿宋",fangsong,serif;
+  font-size:13px;letter-spacing:0.06em;
+  padding:6px 14px;pointer-events:none;
+  opacity:0;transition:opacity 0.2s ease;
+  white-space:nowrap;transform:translate(-50%,32px);
+}
+#copy-toast.show{opacity:1;}
+#topnav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:25px 1.5625vw 0;
+  pointer-events:none;
+}
+.nav-name{
+  font-size:20px;
+  letter-spacing:0.06em;
+  color:#2e2416;
+  font-family:"Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  font-weight:400;
+  pointer-events:all;
+}
+.nav-links{display:flex;gap:1.46vw;pointer-events:all;}
+.nav-links a{
+  font-size:17px;
+  letter-spacing:0.08em;
+  color:#a1a1a1;
+  text-decoration:none;
+  font-family:"Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  font-weight:400;
+  transition:color .2s;
+}
+.nav-links a.active{color:#2e2416;}
+.nav-links a:hover{color:#2e2416;}
+
+/* ── Page header ── */
+.page-header{
+  position:relative;
+  width:100%;
+  height:calc(15.73vw + 96px + 80px);
+  z-index:1;
+}
+.title-en{
+  position:absolute;
+  top:10.83vw;
+  left:3.59vw;
+  font-size:64px;
+  font-family:"RomanS","Romans",Georgia,serif;
+  font-weight:400;
+  font-style:normal;
+  letter-spacing:0.02em;
+  color:#2e2416;
+  line-height:1;
+}
+.title-zh{
+  position:absolute;
+  top:15.73vw;
+  left:2.76vw;
+  font-size:96px;
+  font-family:"Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  font-weight:400;
+  letter-spacing:0.1em;
+  color:#2e2416;
+  line-height:1;
+}
+.cats{
+  position:absolute;
+  top:calc(15.73vw + 76px);
+  left:51.25vw;
+  font-size:20px;
+  letter-spacing:0.28em;
+  color:#a1a1a1;
+  font-family:"Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  font-weight:400;
+  line-height:1;
+}
+
+/* ── Grid ── */
+.grid-wrap{padding:0 1.5625vw;position:relative;z-index:1;}
+
+.ux-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  column-gap:1.98vw;
+  row-gap:5.42vw;
+  align-items:start;
+}
+
+/* ── Work items ── */
+.work-item{display:flex;flex-direction:column;}
+.img-wrap{display:block;overflow:visible;text-decoration:none;cursor:none;}
+
+.img-wrap img{
+  display:block;width:100%;height:auto;
+  transition:transform .42s cubic-bezier(.25,.46,.45,.94),
+             box-shadow  .42s cubic-bezier(.25,.46,.45,.94);
+}
+.work-item:hover .img-wrap img{
+  transform:translateY(-8px);
+  box-shadow:0 22px 52px rgba(40,25,5,.12);
+}
+
+/* Caption */
+.caption{margin-top:12px;}
+.cap-meta{
+  font-size:20px;
+  color:#000000;
+  font-family:"Abhaya Libre Medium","Abhaya Libre",serif;
+  font-weight:500;
+}
+
+/* ── Neon cursor ── */
+body{cursor:none;}
+#nc-dot{
+  position:fixed;width:8px;height:8px;
+  background:#1a1a1a;border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:transform .12s ease,opacity .2s;
+}
+#nc-ring{
+  position:fixed;width:38px;height:38px;
+  border:1.5px solid #1a1a1a;border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:width .2s ease,height .2s ease,opacity .2s;
+}
+
+/* ── Responsive ── */
+@media(max-width:960px){
+  .ux-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .page-header{height:auto;padding-bottom:5vw;}
+  .title-en,.title-zh,.cats{position:static;display:block;}
+  .title-en{font-size:48px;margin-top:14vw;}
+  .title-zh{font-size:72px;margin-top:0.2em;}
+  .cats{font-size:16px;margin-top:1em;}
+}
+</style>
+</head>
+<body>
+
+<div id="copy-toast">邮箱已复制</div>
+<div id="nc-dot"></div>
+<div id="nc-ring"></div>
+
+<nav id="topnav">
+  <span class="nav-name" id="nav-name-home" style="cursor:none;">Zhitian</span>
+  <div class="nav-links">
+    <a href="个人主页.html#card-section" class="active">WORK</a>
+    <a href="个人主页.html#about-section">ABOUT</a>
+    <a href="#" id="contact-link">CONTACT</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<div class="page-header">
+  <span class="title-en">Interaction</span>
+  <h1 class="title-zh">交互设计</h1>
+  <span class="cats">线上产品、用户体验</span>
+</div>
+
+<div class="grid-wrap">
+  <div class="ux-grid">
+    <div class="work-item">
+      <a class="img-wrap" href="https://storyweave-web-k2nl.vercel.app/index-zh.html" target="_blank" rel="noopener">
+        <img src="../作品集相关图片/交互/手机界面展示.png" alt="StoryWeave">
+      </a>
+      <div class="caption"><div class="cap-meta">StoryWeave, 沉浸式步行导览产品, 2026</div></div>
+    </div>
+    <div class="work-item">
+      <a class="img-wrap" href="https://www.figma.com/proto/yDyexZzyZU0okk1ds7gb85/Kettle-s-yard-main-page?node-id=1-2&p=f&viewport=363%2C25%2C0.02&t=o9OP6rOoUrF89Kli-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=1%3A2&page-id=0%3A1" target="_blank" rel="noopener">
+        <img src="../作品集相关图片/交互/电脑界面显示 2.png" alt="Kettle's Yard" loading="lazy">
+      </a>
+      <div class="caption"><div class="cap-meta">Kettle's Yard, 网站复刻练习, 2025</div></div>
+    </div>
+  </div>
+
+  <div style="height:16.93vw;"></div>
+</div>
+
+<script>
+/* ── Entrance animation ── */
+const items = document.querySelectorAll('.work-item');
+items.forEach((el,i)=>{
+  el.style.opacity='0'; el.style.transform='translateY(14px)';
+  const d=Math.min(i*.08,1.1);
+  el.style.transition=`opacity .6s ease ${d}s,transform .6s ease ${d}s`;
+});
+requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  items.forEach(el=>{el.style.opacity='1';el.style.transform='translateY(0)';});
+}));
+</script>
+
+<script>
+/* ── Neon cursor ── */
+(function () {
+  const dot  = document.getElementById('nc-dot');
+  const ring = document.getElementById('nc-ring');
+
+  let mouseX = window.innerWidth  / 2;
+  let mouseY = window.innerHeight / 2;
+  let ringX  = mouseX, ringY = mouseY;
+  let visible = false;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dot.style.left = mouseX + 'px';
+    dot.style.top  = mouseY + 'px';
+    if (!visible) {
+      visible = true;
+      dot.style.opacity  = '1';
+      ring.style.opacity = '1';
+    }
+  });
+
+  (function animateRing() {
+    ringX += (mouseX - ringX) * 0.13;
+    ringY += (mouseY - ringY) * 0.13;
+    ring.style.left = ringX + 'px';
+    ring.style.top  = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  })();
+
+  document.addEventListener('mouseleave', () => {
+    dot.style.opacity  = '0';
+    ring.style.opacity = '0';
+    visible = false;
+  });
+
+  document.addEventListener('mousedown', () => {
+    dot.style.transform  = 'translate(-50%,-50%) scale(0.75)';
+    ring.style.transform = 'translate(-50%,-50%) scale(0.85)';
+  });
+  document.addEventListener('mouseup', () => {
+    dot.style.transform  = 'translate(-50%,-50%) scale(1)';
+    ring.style.transform = 'translate(-50%,-50%) scale(1)';
+  });
+
+  document.querySelectorAll('a, button, .img-wrap, .work-item').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      dot.style.transform    = 'translate(-50%,-50%) scale(1.6)';
+      ring.style.width       = '58px';
+      ring.style.height      = '58px';
+      ring.style.borderColor = '#1a1a1a';
+    });
+    el.addEventListener('mouseleave', () => {
+      dot.style.transform    = 'translate(-50%,-50%) scale(1)';
+      ring.style.width       = '38px';
+      ring.style.height      = '38px';
+      ring.style.borderColor = '#1a1a1a';
+    });
+  });
+})();
+</script>
+
+<script>
+(function () {
+  const toast = document.getElementById('copy-toast');
+  let toastTimer = null;
+  function copyEmail(x, y) {
+    navigator.clipboard.writeText('zhitian_h@outlook.com').then(() => {
+      toast.style.left = x + 'px';
+      toast.style.top  = y + 'px';
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    });
+  }
+  document.getElementById('contact-link').addEventListener('click', e => {
+    e.preventDefault();
+    copyEmail(e.clientX, e.clientY);
+  });
+  document.getElementById('nav-name-home').addEventListener('click', () => {
+    window.location.href = '个人主页.html';
+  });
+})();
+</script>
+</body>
+</html>

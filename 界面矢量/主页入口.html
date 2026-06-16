@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#f8f6f0;font-family:"Noto Serif SC",serif}
+body{perspective:900px;perspective-origin:50% 55%}
+#gateWrap{position:fixed;inset:0;transition:opacity 0.5s ease-in 0.5s,transform 1.1s cubic-bezier(0.3,0,0.5,1)}
+#hint{position:fixed;bottom:6%;left:50%;transform:translateX(-50%);color:rgba(80,65,40,0.45);font-size:12px;letter-spacing:0.35em;pointer-events:none;transition:opacity 0.7s;white-space:nowrap}
+#portfolio{position:fixed;inset:0;background:#f0ebe0;opacity:0;pointer-events:none;transition:opacity 1.2s;overflow-y:auto;display:flex;flex-direction:column;align-items:center}
+#portfolio.on{opacity:1;pointer-events:all}
+.ph{width:100%;padding:2.5rem 2rem 0;text-align:center;position:sticky;top:0;background:#f0ebe0;z-index:10;border-bottom:0.5px solid rgba(100,80,50,0.12)}
+.pt{font-size:20px;color:#3a2e1e;letter-spacing:0.45em;font-weight:400}
+.ps{font-size:10px;color:#9a8a68;letter-spacing:0.3em;margin-top:5px}
+nav{display:flex;gap:2.5rem;padding:1.2rem 0 1rem;font-size:10px;letter-spacing:0.25em;color:#8a7a58}
+nav span{cursor:none;padding-bottom:3px;border-bottom:1px solid transparent;transition:all 0.25s}
+nav span:hover,nav span.active{border-color:#7a5a2a;color:#3a2a10}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:1.5rem;padding:2.2rem 2rem;width:100%;max-width:880px}
+.card{background:#e8e0ce;border-radius:1px;overflow:hidden;cursor:none;transition:transform 0.35s,box-shadow 0.35s;border:0.5px solid rgba(100,80,50,0.15)}
+.card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(40,25,5,0.11)}
+.card.hidden{display:none}
+.ci{width:100%;height:135px;position:relative;overflow:hidden}
+.ci svg{position:absolute;inset:0;width:100%;height:100%}
+.cl{padding:1rem 1rem 0.85rem;font-size:12px;color:#4a3a22;letter-spacing:0.12em;line-height:1.4}
+.ct{font-size:9.5px;color:#9a8060;margin-top:5px;letter-spacing:0.18em}
+.bb{margin:0 auto 2.5rem;font-size:10px;letter-spacing:0.25em;color:#9a8060;cursor:none;padding:8px 22px;border:0.5px solid rgba(100,80,50,0.28);border-radius:1px;transition:all 0.3s;background:transparent;display:block}
+.bb:hover{background:rgba(100,80,50,0.06);color:#5a3a18}
+#aboutSec{display:none;width:100%;max-width:580px;padding:3rem 2rem 1rem}
+#aboutSec.on{display:flex;flex-direction:column;gap:2rem}
+.at{font-size:13px;color:#3a2e1e;letter-spacing:0.35em;padding-bottom:0.9rem;border-bottom:0.5px solid rgba(100,80,50,0.18)}
+.ab{font-size:12.5px;color:#5a4a32;line-height:2.3;letter-spacing:0.05em}
+.ab em{font-style:normal;color:#7a5a28}
+.sk-wrap{display:flex;flex-direction:column;gap:0.8rem}
+.sk-row{display:flex;align-items:flex-start;gap:1.2rem}
+.sk-label{font-size:9.5px;color:#9a8060;letter-spacing:0.22em;min-width:54px;padding-top:4px;flex-shrink:0}
+.sk-tags{display:flex;flex-wrap:wrap;gap:0.4rem}
+.sk-tag{font-size:9px;letter-spacing:0.1em;color:#7a6a48;padding:3px 9px;border:0.5px solid rgba(100,80,50,0.3);border-radius:1px}
+.ct-list{display:flex;flex-direction:column;gap:0.5rem}
+.ct-row{font-size:11px;color:#8a7050;letter-spacing:0.15em}
+.ct-lbl{color:#9a8060;margin-right:0.5em;font-size:9.5px;letter-spacing:0.2em}
+
+/* ── Top nav ── */
+#topnav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:25px 1.5625vw 0;
+  pointer-events:none;
+}
+#topnav .nav-name{
+  font-size:20px;letter-spacing:0.06em;
+  color:#2e2416;font-weight:400;
+  font-family:"Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  pointer-events:all;
+}
+#topnav .nav-links{display:flex;gap:1.46vw;pointer-events:all;}
+#topnav .nav-links a{
+  font-size:17px;letter-spacing:0.08em;
+  color:#a1a1a1;text-decoration:none;
+  font-family:"Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  font-weight:400;transition:color .2s;
+}
+#topnav .nav-links a.active{color:#2e2416;}
+#topnav .nav-links a:hover{color:#2e2416;}
+
+/* ── Loader ── */
+#loader{
+  position:fixed;inset:0;z-index:9999;
+  background:#f8f6f0;
+  cursor:none;
+  transition:transform 1s cubic-bezier(0.76,0,0.24,1);
+}
+#loader.done{transform:translateY(-100%);}
+#loader.ready{cursor:none;}
+.ldr-count{
+  position:absolute;top:1.6rem;right:2.4rem;
+  display:flex;height:72px;overflow:hidden;gap:1px;
+  opacity:1;transition:opacity 0.6s ease;
+}
+#loader.ready .ldr-count{opacity:0;}
+.ldr-col{width:46px;height:72px;overflow:hidden;position:relative;}
+.ldr-strip{
+  position:absolute;top:0;left:0;width:100%;
+  will-change:transform;
+  transition:transform 0.09s cubic-bezier(0.4,0,0.2,1);
+}
+.ldr-strip span{
+  display:flex;align-items:center;justify-content:center;
+  height:72px;
+  font-size:62px;
+  font-family:"Abhaya Libre",serif;
+  color:#2e2416;
+  font-weight:500;
+  letter-spacing:-0.04em;
+}
+.ldr-label{
+  position:absolute;top:calc(1.6rem + 78px);right:2.4rem;
+  font-size:8px;letter-spacing:0.52em;
+  color:rgba(80,65,40,0.38);
+  font-family:"Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  text-transform:uppercase;
+  opacity:1;transition:opacity 0.6s ease;
+}
+#loader.ready .ldr-label{opacity:0;}
+.ldr-prompt{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.9s ease 0.15s;
+}
+.ldr-prompt.show{opacity:1;}
+.ldr-prompt-main{
+  font-size:16px;letter-spacing:0.6em;
+  color:#3a2e1e;
+  font-family:"Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  text-transform:uppercase;
+}
+.ldr-prompt-sub{
+  margin-top:2.2rem;
+  font-size:9px;letter-spacing:0.42em;
+  color:rgba(80,65,40,0.38);
+  font-family:"Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+}
+/* ── Cursor ── */
+body{cursor:none;}
+#nc-dot{
+  position:fixed;width:8px;height:8px;
+  background:#1a1a1a;border-radius:50%;
+  pointer-events:none;z-index:10001;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:transform .12s ease,opacity .2s;
+}
+#nc-ring{
+  position:fixed;width:38px;height:38px;
+  border:1.5px solid #1a1a1a;border-radius:50%;
+  pointer-events:none;z-index:10000;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:width .2s ease,height .2s ease,opacity .2s;
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&family=Abhaya+Libre:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="nc-dot"></div>
+<div id="nc-ring"></div>
+
+<div id="topnav">
+  <span class="nav-name">Zhitian</span>
+  <div class="nav-links">
+    <a href="个人主页.html">WORK</a>
+    <a href="about.html">ABOUT</a>
+    <a href="#">CONTACT</a>
+  </div>
+</div>
+
+<div id="loader">
+  <div class="ldr-count">
+    <div class="ldr-col"><div class="ldr-strip" id="ls0">
+      <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+    </div></div>
+    <div class="ldr-col"><div class="ldr-strip" id="ls1">
+      <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+    </div></div>
+    <div class="ldr-col"><div class="ldr-strip" id="ls2">
+      <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+    </div></div>
+  </div>
+  <div class="ldr-label">正在入园</div>
+  <div id="ldr-prompt" class="ldr-prompt">
+    <div class="ldr-prompt-main">点击进入</div>
+    <div class="ldr-prompt-sub">click anywhere</div>
+  </div>
+</div>
+<div id="gateWrap">
+<svg id="mainSVG" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="1199 1082 1365 750" preserveAspectRatio="xMidYMid slice" style="position:fixed;top:0;left:0;width:100vw;height:100vh;display:block;">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#_屋顶渐变-19);
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-20, .cls-21, .cls-22, .cls-23, .cls-24, .cls-25, .cls-26, .cls-27, .cls-28, .cls-29, .cls-30, .cls-31, .cls-32, .cls-33, .cls-34, .cls-35, .cls-36, .cls-37, .cls-38, .cls-39, .cls-40, .cls-41, .cls-42, .cls-43, .cls-44, .cls-45, .cls-46, .cls-47, .cls-48, .cls-49, .cls-50, .cls-51, .cls-52, .cls-53, .cls-54, .cls-55, .cls-56, .cls-57, .cls-58 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: url(#_未命名的渐变_3-2);
+        opacity: .2;
+      }
+
+      .cls-3 {
+        fill: url(#_屋顶渐变-15);
+      }
+
+      .cls-4 {
+        fill: url(#_未命名的渐变_11);
+      }
+
+      .cls-5 {
+        fill: url(#_屋顶渐变-13);
+      }
+
+      .cls-6 {
+        fill: #897658;
+      }
+
+      .cls-7 {
+        fill: #c8c4b3;
+      }
+
+      .cls-7, .cls-18 {
+        opacity: .83;
+      }
+
+      .cls-8 {
+        fill: url(#_屋顶渐变-3);
+      }
+
+      .cls-9 {
+        fill: url(#_屋顶渐变-20);
+      }
+
+      .cls-10 {
+        fill: url(#_屋顶渐变-4);
+      }
+
+      .cls-11 {
+        fill: #e0ccb3;
+        opacity: .52;
+      }
+
+      .cls-59 {
+        stroke: #a4af8f;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-59, .cls-22 {
+        fill: none;
+      }
+
+      .cls-12 {
+        fill: #73674f;
+      }
+
+      .cls-13 {
+        fill: url(#_未命名的渐变_10);
+      }
+
+      .cls-14 {
+        fill: url(#_屋顶渐变-7);
+      }
+
+      .cls-15 {
+        fill: #a4af8f;
+      }
+
+      .cls-16 {
+        fill: url(#_屋顶渐变-16);
+      }
+
+      .cls-17 {
+        fill: url(#_屋顶渐变-14);
+      }
+
+      .cls-18, .cls-26 {
+        fill: #bcb5a4;
+      }
+
+      .cls-19 {
+        fill: url(#_未命名的渐变_10-3);
+      }
+
+      .cls-20 {
+        fill: url(#_屋顶渐变-8);
+      }
+
+      .cls-21 {
+        fill: #f8f6f0;
+      }
+
+      .cls-23 {
+        fill: url(#_屋顶渐变-24);
+      }
+
+      .cls-24 {
+        fill: #614d35;
+      }
+
+      .cls-25 {
+        fill: url(#_屋顶渐变-18);
+      }
+
+      .cls-27 {
+        fill: url(#_屋顶渐变-22);
+      }
+
+      .cls-28 {
+        fill: url(#_屋顶渐变-2);
+      }
+
+      .cls-29 {
+        fill: #464249;
+      }
+
+      .cls-30 {
+        fill: url(#_未命名的渐变_15-2);
+      }
+
+      .cls-31 {
+        fill: url(#_未命名的渐变_28);
+      }
+
+      .cls-32 {
+        fill: url(#_屋顶渐变-11);
+      }
+
+      .cls-33 {
+        fill: url(#_未命名的渐变_15);
+      }
+
+      .cls-34 {
+        fill: #cfc4b2;
+        opacity: .68;
+      }
+
+      .cls-35 {
+        fill: url(#_屋顶渐变-9);
+      }
+
+      .cls-36 {
+        fill: url(#_屋顶渐变-12);
+      }
+
+      .cls-37 {
+        fill: #507450;
+      }
+
+      .cls-38 {
+        fill: url(#_屋顶渐变-26);
+      }
+
+      .cls-39 {
+        fill: url(#_未命名的渐变_10-2);
+      }
+
+      .cls-40 {
+        fill: url(#_屋顶渐变-23);
+      }
+
+      .cls-41 {
+        fill: url(#_屋顶渐变);
+      }
+
+      .cls-42 {
+        fill: url(#_未命名的渐变_3);
+        opacity: .45;
+      }
+
+      .cls-43 {
+        fill: #649367;
+      }
+
+      .cls-44 {
+        fill: #b6a68c;
+      }
+
+      .cls-45 {
+        fill: #737165;
+      }
+
+      .cls-46 {
+        fill: url(#_屋顶渐变-17);
+      }
+
+      .cls-47 {
+        fill: #aca99f;
+      }
+
+      .cls-48 {
+        fill: url(#_未命名的渐变_9);
+      }
+
+      .cls-49 {
+        fill: #6d6a61;
+      }
+
+      .cls-50 {
+        fill: url(#_屋顶渐变-6);
+      }
+
+      .cls-51 {
+        fill: url(#_屋顶渐变-27);
+      }
+
+      .cls-52 {
+        fill: url(#_屋顶渐变-5);
+      }
+
+      .cls-53 {
+        fill: url(#_屋顶渐变-25);
+      }
+
+      .cls-54 {
+        fill: #e3dbd0;
+      }
+
+      .cls-55 {
+        fill: url(#_屋顶渐变-28);
+      }
+
+      .cls-56 {
+        fill: url(#_屋顶渐变-10);
+      }
+
+      .cls-57 {
+        fill: url(#_屋顶渐变-21);
+      }
+
+      .cls-58 {
+        fill: url(#_未命名的渐变_14);
+      }
+    </style>
+    <linearGradient id="_屋顶渐变" data-name="屋顶渐变" x1="1950.61" y1="1340.41" x2="1950.61" y2="1343.86" gradientUnits="userSpaceOnUse">
+      <stop offset=".13" stop-color="#716d6b"/>
+      <stop offset=".39" stop-color="#686463"/>
+      <stop offset=".82" stop-color="#4f4b50"/>
+      <stop offset=".96" stop-color="#464249"/>
+    </linearGradient>
+    <linearGradient id="_屋顶渐变-2" data-name="屋顶渐变" y1="1345.32" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-3" data-name="屋顶渐变" x1="1960.76" x2="1960.76" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-4" data-name="屋顶渐变" x1="1960.76" y1="1345.32" x2="1960.76" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-5" data-name="屋顶渐变" x1="1970.91" x2="1970.91" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-6" data-name="屋顶渐变" x1="1970.91" y1="1345.32" x2="1970.91" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-7" data-name="屋顶渐变" x1="1981.06" x2="1981.06" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-8" data-name="屋顶渐变" x1="1981.06" y1="1345.32" x2="1981.06" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-9" data-name="屋顶渐变" x1="1991.21" x2="1991.21" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-10" data-name="屋顶渐变" x1="1991.21" y1="1345.32" x2="1991.21" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-11" data-name="屋顶渐变" x1="1940.42" x2="1940.42" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-12" data-name="屋顶渐变" x1="1940.42" y1="1345.32" x2="1940.42" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-13" data-name="屋顶渐变" x1="1930.24" x2="1930.24" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-14" data-name="屋顶渐变" x1="1930.24" y1="1345.32" x2="1930.24" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-15" data-name="屋顶渐变" x1="1920.05" x2="1920.05" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-16" data-name="屋顶渐变" x1="1920.05" y1="1345.32" x2="1920.05" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-17" data-name="屋顶渐变" x1="1909.87" x2="1909.87" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-18" data-name="屋顶渐变" x1="1909.87" y1="1345.32" x2="1909.87" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-19" data-name="屋顶渐变" x1="1899.69" x2="1899.69" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-20" data-name="屋顶渐变" x1="1899.69" y1="1345.32" x2="1899.69" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-21" data-name="屋顶渐变" x1="1889.5" x2="1889.5" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-22" data-name="屋顶渐变" x1="1889.5" y1="1345.32" x2="1889.5" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-23" data-name="屋顶渐变" x1="1879.32" x2="1879.32" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-24" data-name="屋顶渐变" x1="1879.32" y1="1345.32" x2="1879.32" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-25" data-name="屋顶渐变" x1="1869.14" x2="1869.14" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-26" data-name="屋顶渐变" x1="1869.14" y1="1345.32" x2="1869.14" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-27" data-name="屋顶渐变" x1="1858.95" x2="1858.95" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_屋顶渐变-28" data-name="屋顶渐变" x1="1858.95" y1="1345.32" x2="1858.95" y2="1348.77" xlink:href="#_屋顶渐变"/>
+    <linearGradient id="_未命名的渐变_10" data-name="未命名的渐变 10" x1="1841.92" y1="1350.18" x2="1841.92" y2="1381.61" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a4af8f"/>
+      <stop offset=".16" stop-color="#8ca480"/>
+      <stop offset=".37" stop-color="#769b72"/>
+      <stop offset=".56" stop-color="#689569"/>
+      <stop offset=".73" stop-color="#649367"/>
+    </linearGradient>
+    <linearGradient id="_未命名的渐变_10-2" data-name="未命名的渐变 10" x1="1798.38" y1="1315.17" x2="1798.38" y2="1387.1" xlink:href="#_未命名的渐变_10"/>
+    <linearGradient id="_未命名的渐变_11" data-name="未命名的渐变 11" x1="1716.77" y1="1401.1" x2="1716.77" y2="1447.8" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a4af8f"/>
+      <stop offset=".22" stop-color="#8ca480"/>
+      <stop offset=".5" stop-color="#769b72"/>
+      <stop offset=".77" stop-color="#689569"/>
+      <stop offset="1" stop-color="#649367"/>
+    </linearGradient>
+    <linearGradient id="_未命名的渐变_9" data-name="未命名的渐变 9" x1="1849.23" y1="1333.61" x2="1849.23" y2="1486.62" gradientUnits="userSpaceOnUse">
+      <stop offset=".04" stop-color="#a4af8f"/>
+      <stop offset=".91" stop-color="#649367"/>
+    </linearGradient>
+    <linearGradient id="_未命名的渐变_10-3" data-name="未命名的渐变 10" x1="1826.24" y1="1299.25" x2="1826.24" y2="1504.71" xlink:href="#_未命名的渐变_10"/>
+    <linearGradient id="_未命名的渐变_14" data-name="未命名的渐变 14" x1="1909.05" y1="1450.43" x2="1909.05" y2="1513.61" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a4af8f"/>
+      <stop offset=".16" stop-color="#8ca480"/>
+      <stop offset=".35" stop-color="#769b72"/>
+      <stop offset=".54" stop-color="#689569"/>
+      <stop offset=".71" stop-color="#649367"/>
+    </linearGradient>
+    <linearGradient id="_未命名的渐变_15" data-name="未命名的渐变 15" x1="2035.04" y1="1407.73" x2="2035.04" y2="1480.79" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a4af8f"/>
+      <stop offset=".21" stop-color="#8ca480"/>
+      <stop offset=".48" stop-color="#769b72"/>
+      <stop offset=".73" stop-color="#689569"/>
+      <stop offset=".96" stop-color="#649367"/>
+    </linearGradient>
+    <linearGradient id="_未命名的渐变_15-2" data-name="未命名的渐变 15" x1="2011.2" y1="1479.83" x2="2011.2" y2="1612.16" xlink:href="#_未命名的渐变_15"/>
+    <linearGradient id="_未命名的渐变_28" data-name="未命名的渐变 28" x1="1763.56" y1="1481.2" x2="1763.56" y2="1599.07" gradientUnits="userSpaceOnUse">
+      <stop offset=".16" stop-color="#649367"/>
+      <stop offset=".38" stop-color="#5b865d"/>
+      <stop offset=".71" stop-color="#537853"/>
+      <stop offset="1" stop-color="#507450"/>
+    </linearGradient>
+    <linearGradient id="_未命名的渐变_3" data-name="未命名的渐变 3" x1="1536.17" y1="1478.21" x2="2165.54" y2="1478.21" gradientTransform="translate(15.64 -18.35)" gradientUnits="userSpaceOnUse">
+      <stop offset=".24" stop-color="#f8f6f0"/>
+      <stop offset=".3" stop-color="#f8f6ef" stop-opacity=".96"/>
+      <stop offset=".4" stop-color="#f8f6ee" stop-opacity=".87"/>
+      <stop offset=".53" stop-color="#f8f6ec" stop-opacity=".71"/>
+      <stop offset=".68" stop-color="#f9f7e9" stop-opacity=".48"/>
+      <stop offset=".85" stop-color="#f9f8e5" stop-opacity=".2"/>
+      <stop offset=".96" stop-color="#faf9e3" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="_未命名的渐变_3-2" data-name="未命名的渐变 3" x1="1642.38" x2="2109.85" gradientTransform="translate(-9.62 6.91)" xlink:href="#_未命名的渐变_3"/>
+  </defs>
+  <g id="_背景" data-name="背景">
+    <rect class="cls-21" x="1199" y="1070.74" width="1364.85" height="764.06"/>
+    <g id="_地面" data-name="地面">
+      <rect class="cls-34" x="1199" y="1718.85" width="1364.85" height="119.89"/>
+    </g>
+    <path class="cls-22" d="m1882.19,1289.83c-60.22,0-114.54,25.73-152.57,66.76h305.15c-38.03-41.03-92.35-66.76-152.57-66.76Z"/>
+    <path class="cls-11" d="m2034.76,1356.59h-305.15c-34.41,37.13-55.49,86.8-55.49,141.3,0,26.58,5.02,52.01,14.14,75.39h387.84c9.13-23.39,14.14-48.82,14.14-75.39,0-54.5-21.07-104.17-55.49-141.3Z"/>
+    <path class="cls-22" d="m1738.63,1648.35c-7.54-8.47-15.09-16.95-22.63-25.42,6.85,9.08,14.42,17.58,22.63,25.42Z"/>
+    <rect class="cls-7" x="1786.09" y="1348.32" width="239.03" height="8.27"/>
+    <rect class="cls-18" x="1784.3" y="1356.59" width="239.03" height="9.1"/>
+    <rect class="cls-45" x="1699.97" y="1559.23" width="368.85" height="14.4"/>
+    <g id="_草地" data-name="草地">
+      <path class="cls-15" d="m1688.27,1573.29c6.97,17.87,16.36,34.55,27.74,49.64,7.54,8.47,15.09,16.95,22.63,25.42,5.01,4.78,10.25,9.31,15.72,13.58v4.07c1.88,2.12,3.77,4.24,5.65,6.35l22.09-17.47,46.04-16.54,38.6-8.27,68.1-6.62,96.35-2.48-.41,2.79c3.03-.56,6.07-1.12,9.1-1.68,7.72-16.27,15.44-32.53,23.16-48.8h-374.76Z"/>
+    </g>
+    <g id="_道路" data-name="道路">
+      <path class="cls-26" d="m2041.42,1718.85c-11.02-.04-22.03-.07-33.05-.11l-3.79-61.92,23.99-33.89-43.9,2.19-72.71,3.31-57.62,7.21-63.41,21.73-30.6,28.12-17.31,32.36c-9.94-.03-19.89-.07-29.83-.1,0,0-103.99,100.43-125.66,120.99h580.09c-22.22-20.57-106.34-100.5-126.18-119.89Z"/>
+    </g>
+    <g id="_石子铺地" data-name="石子铺地">
+      <path class="cls-54" d="m1788.23,1696.11l40.87-37.27,40.11-19.12,47.69-7.44,34.74-3.86,76.92-2.76-15.71,20.95-22.16,4.41-16.16,7.17-9.37,34.74c11.39,22.01,65.33,119.22,80.91,145.81h-344.68c16.6-26.84,74.49-121.93,86.85-142.63Z"/>
+    </g>
+    <path class="cls-29" d="m1821.31,1334.67v17.23h45.35c.29-1.14,1.31-1.98,2.54-1.98s2.25.84,2.54,1.98h.03c.29,1.14,1.31,1.98,2.54,1.98s2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98h.03c.29,1.14,1.31,1.98,2.54,1.98s2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98,1.31,1.98,2.54,1.98,2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98h.03c.29,1.14,1.31,1.98,2.54,1.98s2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98h.03c.29,1.14,1.31,1.98,2.54,1.98s2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98,1.31,1.98,2.54,1.98,2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98h.03c.29,1.14,1.31,1.98,2.54,1.98s2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98h.03c.29,1.14,1.31,1.98,2.54,1.98s2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98,1.31,1.98,2.54,1.98,2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98h.03c.29,1.14,1.31,1.98,2.54,1.98s2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98h.03c.29,1.14,1.31,1.98,2.54,1.98s2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98,1.31,1.98,2.54,1.98,2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98h.03c.29,1.14,1.31,1.98,2.54,1.98s2.25-.84,2.54-1.98,1.31-1.98,2.54-1.98,2.25.84,2.54,1.98h7.2v-17.23h-189.88Z"/>
+    <g>
+      <path class="cls-41" d="m1950.61,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-28" d="m1950.61,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-8" d="m1960.76,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-10" d="m1960.76,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-52" d="m1970.91,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-50" d="m1970.91,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-14" d="m1981.06,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-20" d="m1981.06,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-35" d="m1991.22,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-56" d="m1991.22,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-32" d="m1940.42,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-36" d="m1940.42,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-5" d="m1930.24,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-17" d="m1930.24,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-3" d="m1920.05,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-16" d="m1920.05,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-46" d="m1909.87,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-25" d="m1909.87,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-1" d="m1899.69,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-9" d="m1899.69,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-57" d="m1889.5,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-27" d="m1889.5,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-40" d="m1879.32,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-23" d="m1879.32,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-53" d="m1869.14,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-38" d="m1869.14,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g>
+      <path class="cls-51" d="m1858.95,1340.41c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+      <path class="cls-55" d="m1858.95,1345.32c-1.9,0-3.45,1.54-3.45,3.45h6.89c0-1.9-1.54-3.45-3.45-3.45Z"/>
+    </g>
+    <g id="_图层_17" data-name="图层 17">
+      <rect class="cls-45" x="1821.93" y="1331.64" width="156.32" height="3.03"/>
+    </g>
+  </g>
+  <g id="_树叶" data-name="树叶">
+    <path class="cls-15" d="m1923.25,1417.8c1.91-2.46,3.81-4.92,5.72-7.37l-5.64-12.69,1.37-8.05h-6.62l-8.48-5.79-.7-.06-.13-.08h-.89l-11.17-.9c3.06-3.06,6.11-6.11,9.17-9.17-1.86-3.08-3.72-6.16-5.58-9.24v-3.93l-6.82-5.17-10.09,3.52-11.21-5.58-17.37-5.58-6.82-13.03-18.88-1.65-6.75-9.81-28.53,1.75-22.46,16.88-2.07.42-6.86,6.29h0l-10.57,7.94-2.79,1.86-27.4,34.07c.7-.1,1.4-.21,2.11-.31l-.25.31,11.61-1.49.66.64v2.11l5.28,2.98,1.31,1.23-14.82-.77-1.45,7.13-8.99-6.41-12.48,8.27-11.2,49.83h12.82l11.89-5.69h13.85l5.48-6.31-7.13-4.24,5.96-9.92-9.58-4.14-14.06.62-1.34-1.86,12.89-3.95h15.92l13.68.43,13.03,3.52,6.42-9.26.6,11.88-1.13.07,1.45,6.2,19.07-1.32c3.96.14,7.92.28,11.87.42,6.52-1.57,13.05-3.14,19.57-4.72l3.72,4.85c5.63-1.13,11.26-2.25,16.89-3.38l2.72,4.86.1.45,11.17-2.95,2.08,1.22,7.95,4.87,2.71,2.44c.93.6,1.87,1.2,2.8,1.8-2.4,1.51-4.81,3.03-7.21,4.54l-1.86,9.86,8.06,3.31,14.83-3.45,22.07,5.44.31.08,13.44-3.38,1.24-5.03-2.01-2.74-1.09-10.98,4.76-15.51-4.14-6.2Zm-61.48-7.44c-3.58.07-7.17.14-10.75.21l-7.93-3.58-13.99.69-4.27-2.69-21.92,2.69h-11.79l-15.84,4.55,1.36-1.97-4.69-4.6.68-.24,28.62-9.94c3.52.55,7.03,1.1,10.55,1.65,7.15-.28,14.29-.55,21.44-.83l34.88,7.55c-2.11,2.17-4.23,4.34-6.34,6.51Z"/>
+    <path class="cls-22" d="m1832.68,1404.23l-.61-5.05c.39-.96.78-1.93,1.17-2.89-7.15.28-14.29.55-21.44.83-3.52-.55-7.03-1.1-10.55-1.65l-28.62,9.94h0s-.68.24-.68.24l4.69,4.6-1.36,1.97,15.84-4.55h11.79l21.92-2.69,4.27,2.69,2.95-1.29.47-.21c.05-.65.1-1.29.15-1.94Z"/>
+    <polygon class="cls-22" points="1859.3 1431.53 1861.38 1432.75 1866.41 1435.83 1859.36 1431.51 1859.3 1431.53"/>
+    <polygon class="cls-22" points="1869.33 1437.62 1872.04 1440.06 1873.56 1441.57 1870.04 1438.06 1869.33 1437.62"/>
+    <path class="cls-22" d="m1912.22,1408.97c-.05-2.11-.09-4.23-.14-6.34-2.85-2.62-5.7-5.24-8.55-7.86l-36.67,18.47-15.85-2.76-8-3.45c-3.54.18-7.08.37-10.61.55-.12-.41-.24-.81-.36-1.22l-2.95,1.29-4.27-2.69-21.92,2.69h-11.79l-15.84,4.55,1.36-1.97-4.69-4.6.68-.24s0,0,0,0l-14.94-8.01c-4.35.72-8.7,1.44-13.04,2.15-.84-.56-1.68-1.11-2.52-1.67l-14.59-.76-1.45,7.13-8.99-6.41-12.48,8.27-11.2,49.83h12.82l11.89-5.69h13.85l5.48-6.31-7.13-4.24,5.96-9.92-9.58-4.14-14.06.62-1.34-1.86-9.51-.41,6.48-6.82,20.75-2.27,7.79,1.14,3.31,4.43h0l8.23.26c-2.12-1.44-4.25-2.87-6.37-4.31l12.61-4.2,16.82,2.69-4.27,3.76c-4.07.85-8.14,1.7-12.21,2.54l11.9,3.21,6.42-9.26.6,11.88-1.13.07,19.16-1.17,7.93-4.62,17.85-.41c4.44,1.74,8.88,3.48,13.32,5.22-2,.65-4,1.3-6,1.96,1.14,1.49,2.29,2.98,3.43,4.47,5.63-1.13,11.26-2.25,16.89-3.38l2.72,4.86-2.45-10.51-12.41-1.79v-5.79l9.3-3.72,8.06,5.58,8.41,1.93.55,3.65,9.92-.55,5.24-4.41,10.34,2.48,5.86-5.58,7.17,5.58-3.58,3.72,10.55,3.58,11.17,7.58-5.1,1.52,1.17,7.24c3.78,1.5,7.57,2.99,11.35,4.49l-.94-9.52,4.76-15.51-4.14-6.2-11.03-8.82Z"/>
+    <path class="cls-22" d="m1755.91,1368.58l3.45,3.86,15.99,2.21,9.51-1.38,8.55,4.55,21.5-7.44-6.62-4.55,9.51-1.93,14.61,7.17h10.48l7.86,5.1,8.68-1.38-3.86-4.76,6.2-4.62,1.14,4.62,13.89,4.62,5.39-4.62,11.42,4.07,4.88,4.76-3.64,3.51,1.86,1.38h11.17l-11.17-.9c3.06-3.06,6.11-6.11,9.17-9.17-1.86-3.08-3.72-6.16-5.58-9.24v-3.93l-6.82-5.17-10.09,3.52-11.21-5.58-17.37-5.58-6.82-13.03-18.88-1.65-6.75-9.81-28.53,1.75-22.46,16.88,22.88-4.68,9.44,4.14,16.34-4.14,14.34,7.72h-26.05l-12.13,5.65-4.96-3.03h-3.58l-1.24,3.56-12.54,2.51-11.41-5.01-10.57,7.94-2.79,1.86-27.4,34.07c.7-.1,1.4-.21,2.11-.31l18.64-23.53h13.51Zm79.47-12.82l9.03,4.96,6.48-2.48h5.38l1.38,2.48-13.1,4.96-9.17-1.79-9.17-4.55,9.17-3.58Z"/>
+    <polygon class="cls-22" points="1909.6 1383.89 1908.91 1383.83 1908.78 1383.75 1918.08 1389.67 1909.6 1383.89"/>
+    <polygon class="cls-13" points="1844.54 1365.69 1857.64 1360.73 1856.26 1358.25 1850.88 1358.25 1844.4 1360.73 1835.37 1355.76 1826.21 1359.35 1835.37 1363.9 1844.54 1365.69"/>
+    <polygon class="cls-39" points="1786.37 1351.05 1787.61 1347.49 1791.19 1347.49 1796.16 1350.53 1808.29 1344.87 1834.34 1344.87 1820 1337.16 1803.67 1341.29 1794.23 1337.16 1771.35 1341.83 1771.35 1341.83 1769.28 1342.26 1762.41 1348.54 1762.41 1348.54 1762.41 1348.54 1773.83 1353.56 1786.37 1351.05"/>
+    <polygon class="cls-4" points="1740.12 1420.46 1740.12 1420.46 1736.81 1416.04 1729.03 1414.9 1708.28 1417.18 1704.79 1420.85 1701.32 1420.85 1693.43 1455.94 1706.25 1455.94 1718.14 1450.26 1731.99 1450.26 1737.47 1443.95 1730.33 1439.71 1736.3 1429.79 1726.72 1425.65 1712.66 1426.27 1711.31 1424.41 1724.2 1420.46 1740.12 1420.46"/>
+    <path class="cls-43" d="m1771.41,1414.9l-16.82-2.69-12.61,4.2c2.12,1.44,4.25,2.87,6.37,4.31l5.45.17,1.13.3c4.07-.85,8.14-1.7,12.21-2.54l4.27-3.76Z"/>
+    <path class="cls-48" d="m1923.72,1450.48l-.14-1.46c-3.78-1.5-7.57-2.99-11.35-4.49l-1.17-7.24,5.1-1.52-11.17-7.58-10.55-3.58,3.58-3.72-7.17-5.58-5.86,5.58-10.34-2.48-5.24,4.41-9.92.55-.55-3.65-8.41-1.93-8.06-5.58-9.3,3.72v5.79l-2.19,4.39c-4.44-1.74-8.88-3.48-13.32-5.22l-17.85.41-7.93,4.62c-6.39-1.98-12.77-3.95-19.16-5.93,1.4,6.19,2.79,12.38,4.19,18.57,4.12-1.91,8.24-3.83,12.35-5.74,5.28-.14,10.57-.29,15.85-.43,6.52-1.57,19.77-4.46,19.87-4.33l3.43,4.47,16.89-3.38,2.83,5.31,11.17-2.95.06-.02,7.05,4.32,2.91,1.79h0c.94.84,1.89,1.68,2.83,2.51.79.54,1.58,1.08,2.37,1.62-2.3,1.55-4.6,3.1-6.9,4.64l-1.86,9.86,8.06,3.31,14.83-3.45,22.07,5.44.31.08,13.44-3.38,1.24-5.03-2.01-2.74Z"/>
+    <path class="cls-19" d="m1923.33,1397.73l1.37-8.05h-6.62l-9.3-5.93h-12.06l-1.86-1.38,3.64-3.51-4.88-4.76-11.42-4.07-5.39,4.62-13.89-4.62-1.14-4.62-6.2,4.62,3.86,4.76-8.68,1.38-7.86-5.1h-10.48l-14.61-7.17-9.51,1.93,6.62,4.55-21.5,7.44-8.55-4.55-9.51,1.38-15.99-2.21-3.45-3.86h-13.51l-18.64,23.53-.25.31,11.61-1.49.66.64v2.11l5.28,2.98,1.31,1.23h-.23c.84.54,1.68,1.1,2.52,1.66,4.35-.72,8.7-1.44,13.04-2.15l14.94,8.01s0,0,0,0h0s28.62-9.94,28.62-9.94c3.52.55,7.03,1.1,10.55,1.65,7.15-.28,14.29-.55,21.44-.83l34.88,7.55,14.15-1.45c7.09-2.54,14.19-5.08,21.28-7.62,2.85,2.62,5.7,5.24,8.55,7.86.05,2.11.09,4.23.14,6.34l11.03,8.82c1.91-2.46,3.81-4.92,5.72-7.37l-5.64-12.69Z"/>
+  </g>
+  <g id="_树枝" data-name="树枝">
+    <polygon class="cls-12" points="1865.56 1434.27 1860.6 1440.13 1861.7 1445.02 1867.49 1446.33 1874.38 1441.51 1883 1439.99 1896.72 1440.26 1887.48 1441.71 1878.18 1442.61 1872.45 1447.64 1874.66 1448.6 1880.79 1448.47 1889.34 1447.16 1893.89 1449.71 1882.19 1450.12 1877 1451.57 1867.56 1449.22 1848.19 1447.5 1842.2 1444.06 1838.06 1443.3 1829.1 1430.2 1834.89 1430.75 1840.13 1439.37 1847.71 1443.23 1856.95 1443.23 1857.5 1439.78 1861.98 1433.3 1865.56 1434.27"/>
+    <path class="cls-12" d="m1868.8,1508.64l35.84,15.71.96-2.62-27.71-11.85,6.89-1.79h5.93l7.03,3.86,1.93-2.62-9.24-4.49h-5.38l-5.1,1.87-16.82-1.87-19.3-11.08,1.1-1.93,10.48.41,14.06.28,5.24,3.58,5.38.55,11.03-1.32h7.03l-2.76-6.81-12.02-3.72-8.38,3.03-7.44.69c2.5-3.31,5.01-6.62,7.51-9.92-3.7,3.31-7.4,6.62-11.1,9.92l-4.82-1.52h-7.58l-11.99-12.41-16.68-11.3-16.4-30.05-6.34.28-10.89,12.41-8.82-4.96-4-9.92,3.2-18.13c3.88-1.66,7.75-3.32,11.63-4.98,1.84.05,3.69.1,5.53.16l10.65-6.1,10.13-7.03h9.2l21.81-1.55,18.71-9.61-14.27,5.89-12.51.93,9.41-12.51-10.86,10.86-4.55,1.45-12.61.41,12.61-5.89-19.33,6,4.45-11.89-7.65,13.23-9.3,5.48-8.68,2.58-11.79,8.27-2.37,1.13.3-4.33,9.1-23.57-2.07-3.17-5.65.41-2.48,8c-4.32-.75-8.64-1.49-12.96-2.24l-2.84-5.3c-3.53-1.75-7.07-3.49-10.6-5.24l6.69,5.62c.7,1.37,1.4,2.73,2.1,4.1-5.41-.03-10.82-.07-16.23-.1-3.21-2.32-6.43-4.64-9.64-6.96-.94.8-1.89,1.61-2.83,2.41l8.41,5.79,9.1,2.76,10.89-.69,5.65,1.65,9.37,2.21-5.24,3.58v14.06l-8,9.65-8.41,1.38-10.75,3.86-3.03,7.86v4.55l-4.14,6.48-5.38-1.79-9.79-1.1h-11.85l-4.96,3.86,12.27-.96,10.61.96,10.34,3.31c2.05-3.18,4.1-6.35,6.14-9.53.12-2.12.23-4.24.35-6.36.89-1.89,1.77-3.77,2.66-5.66,3.84-1.09,7.68-2.17,11.52-3.26l1.79,1.1,3.45,20.68,5.38,5.93,7.58,3.72,3.86,7.31,2.07,14.75,2.21,63.55,17.64,1.38-2.48-6.2-2.76-5.24-2.76-51.97-.55-7.44.14-18.75,5.1-6.75,6.2.55,8.96,15.71,3.72,8.96,6.34,12.48,2.89,6.82,9.79,5.1,13.51,10.34,10.06,10.89,12.41,4,3.17-1.38v-1.38h-3.72l-9.65-3.72-9.79-8.96,4.69,1.43,11.03,3.8Zm14.59-21.44l10.98,2.69.28,2.83h-6.07l-8.62,1.65-6.75-3.31,10.17-3.86Zm-56.42-17.99l9.86,7.37,13.78,13.3-12.61-1.52-11.03-19.16Z"/>
+    <path class="cls-12" d="m1961.23,1549.51l.62,5.17h12.2l7.37-7.44,4.89-.83-5.03,5.79,5.03,2.14,8.2-.55,5.44-6,3.45-.55-8.13,8.75,2.34,2.69,7.86-2.76,5.72-.41,2.69-5.44,4.96-3.65,3.17,2.07-6.13,4.07.07,4.48,7.17,2.62c-2.87,2.55-5.74,5.1-8.62,7.65,1.49.55,2.97,1.11,4.46,1.66-3.14,3.42-6.28,6.84-9.42,10.27h-38.18l16.4-17.64-10.82-6.69-1.72,1.65-14.54-.07-2.41-4,2.96-2.96Z"/>
+  </g>
+  <g id="_上层树叶" data-name="上层树叶">
+    <path class="cls-15" d="m1844.06,1466.06l9.72,1.77,7.86-2.89,2.69,4.27,9.92,2.76v-5.51l11.79,3.85,10.68-1.1,14.54.9,8.27-3.64,7.86,1.99c.6-.85,1.19-1.7,1.79-2.55,2.92.19,5.84.37,8.75.56l3.52,2.75,3.93,2.76v1.65l2.27,2.89-12.41,9.28h-2.07l3.72,4.09-8.48.9-4.14,4.53h11.58l4.34,6.22-12.82,7.03-12.2,3.72c-6.52.37-13.05.74-19.57,1.1,1.54-3.56,3.08-7.12,4.62-10.68-3.26-1.81-6.52-3.63-9.79-5.44-1.84-4.78-3.68-9.56-5.51-14.34-3.35.21-6.71.41-10.06.62l-6.2.69-9.92-6.07-12.61-.83-3.93-9.92,1.86-1.36Z"/>
+    <polygon class="cls-43" points="1918.6 1521.18 1928.73 1515.29 1929.25 1510.12 1943.1 1504.83 1947.65 1510.43 1934.31 1518.6 1939.69 1521.18 1936.69 1524.18 1930.9 1524.18 1919.63 1529.35 1904.64 1524.35 1905.61 1521.73 1918.6 1521.18"/>
+    <g id="_图层_11" data-name="图层 11">
+      <path class="cls-58" d="m1940.64,1481.76c-5.7-.97-11.41-1.94-17.11-2.9l-.69-4.82-10.2,5.88-11.58,1.67-6.41-7.55-13.72,5.51-3.47,3.84c2.49-.15,4.98-.31,7.47-.46,1.84,4.78,3.68,9.56,5.51,14.34,3.26,1.81,6.52,3.63,9.79,5.44-1.54,3.56-3.08,7.12-4.62,10.68,5.31-.3,10.61-.6,15.92-.9l4.61-.5,11.24-3.43,12.82-7.03-4.34-6.22h-11.58l4.14-4.53,8.48-.9-3.72-4.09h2.07l5.39-4.03Z"/>
+    </g>
+    <polygon class="cls-33" points="2055.03 1407.59 2027.19 1415.04 2029.12 1421.2 2018.09 1427.72 2024.15 1433.67 2036.56 1437.62 2032.43 1445.92 2019.19 1445.92 2009.82 1435.83 1998.52 1444.26 2005.13 1449.78 2011.2 1449.78 2007.89 1457.31 2024.98 1464.94 2046.21 1457.31 2062.48 1461.63 2071.57 1451.57 2055.03 1407.59"/>
+    <path class="cls-43" d="m1972.39,1566.67l8.55-6.2h9.51c2.16,2,4.32,4,6.48,6-8.18.07-16.36.14-24.54.21Z"/>
+    <path class="cls-30" d="m2074.33,1472.66l-26.19-9.65-5.51,1.93-1.1,10.48-8.27-4.89-2.76,11.06-6.34,1.55-12.13,12.19,5.51,11.8-18.2,8.95-10.75-8.95-36.12,11.58-7.44,12.82,8,5.93-2.48,10.06,7.72,6.82,19.57-6.82,12.13,5.38,13.78-4.14,2.21-4.69,9.37-2.83-1.1,6.27,6.57,7.04,7.77-1.8,5.24,4.55-14.89,8.82,8,6.07,35.01-1.65,15.44-42.46-3.03-55.41Zm-48.66,35.7l1.1,7.31-9.1-1.1,8-6.2Zm-1.52,36.25l-5.1-1.52,1.93-4.41,7.58.96-4.41,4.96Zm8.96,0l-1.65-.69.83-3.58h3.86l-3.03,4.27Zm19.57,6.89h-10.2l3.86-5.1h.69l12.27-1.79-6.62,6.89Z"/>
+    <line class="cls-59" x1="2021.54" y1="1427.72" x2="2035.87" y2="1421.24"/>
+    <line class="cls-59" x1="2027.88" y1="1430.2" x2="2035.04" y2="1424"/>
+    <line class="cls-59" x1="2029.53" y1="1432.96" x2="2042.35" y2="1427.1"/>
+    <line class="cls-59" x1="2045.38" y1="1431.44" x2="2035.87" y2="1446.61"/>
+    <line class="cls-59" x1="2045.38" y1="1436.92" x2="2042.35" y2="1452.53"/>
+    <line class="cls-59" x1="2048.28" y1="1435.72" x2="2049.24" y2="1450.74"/>
+    <line class="cls-59" x1="2016.85" y1="1456.81" x2="2034.22" y2="1450.74"/>
+    <line class="cls-59" x1="2019.05" y1="1459.15" x2="2029.53" y2="1453.77"/>
+    <line class="cls-59" x1="2023.19" y1="1460.8" x2="2033.53" y2="1453.77"/>
+    <line class="cls-59" x1="2029.53" y1="1460.8" x2="2037.39" y2="1453.77"/>
+    <line class="cls-59" x1="2014.23" y1="1448.4" x2="2031.46" y2="1447.29"/>
+    <line class="cls-59" x1="2009.41" y1="1438.06" x2="2011.2" y2="1446.61"/>
+    <line class="cls-59" x1="2006.1" y1="1440.26" x2="2009.41" y2="1446.61"/>
+    <line class="cls-59" x1="2003.34" y1="1445.36" x2="2009.41" y2="1447.85"/>
+    <line class="cls-59" x1="1954.54" y1="1521.18" x2="1965.43" y2="1525.87"/>
+    <line class="cls-59" x1="1953.03" y1="1523.52" x2="1962.12" y2="1527.38"/>
+    <line class="cls-59" x1="1948.89" y1="1530.14" x2="1962.12" y2="1529.35"/>
+    <path class="cls-59" d="m1951.37,1533.17c.41-.14,12.13-1.52,12.13-1.52"/>
+    <line class="cls-59" x1="2021.54" y1="1533.17" x2="2009.41" y2="1534.97"/>
+    <line class="cls-59" x1="2023.81" y1="1534.07" x2="2014.23" y2="1537.17"/>
+    <line class="cls-59" x1="2027.33" y1="1534.97" x2="2022.85" y2="1537.17"/>
+    <line class="cls-59" x1="2030.91" y1="1534.07" x2="2027.33" y2="1538"/>
+    <line class="cls-59" x1="2035.04" y1="1534.97" x2="2030.36" y2="1538.69"/>
+    <line class="cls-59" x1="2033.8" y1="1567.63" x2="2028.57" y2="1570.81"/>
+    <line class="cls-59" x1="2038.22" y1="1566.67" x2="2032.7" y2="1570.81"/>
+    <line class="cls-59" x1="2043.04" y1="1566.67" x2="2038.22" y2="1570.81"/>
+    <line class="cls-59" x1="2047.31" y1="1565.7" x2="2043.04" y2="1570.81"/>
+    <line class="cls-59" x1="2051.72" y1="1564.88" x2="2047.86" y2="1569.84"/>
+    <line class="cls-59" x1="2056.82" y1="1563.57" x2="2052.28" y2="1569.84"/>
+    <line class="cls-59" x1="1962.95" y1="1541.65" x2="1954.54" y2="1538.69"/>
+    <line class="cls-59" x1="1959.99" y1="1542.96" x2="1953.58" y2="1541.65"/>
+    <line class="cls-59" x1="1959.99" y1="1544.61" x2="1953.03" y2="1544.61"/>
+    <line class="cls-59" x1="1954.54" y1="1547.1" x2="1961.16" y2="1546.41"/>
+    <line class="cls-59" x1="1958.26" y1="1550.13" x2="1964.19" y2="1546.75"/>
+    <line class="cls-59" x1="1962.12" y1="1550.13" x2="1968.19" y2="1546.75"/>
+  </g>
+  <g id="_树丛" data-name="树丛">
+    <path class="cls-44" d="m1792.58,1530.69c-1.52.48-3.03.96-4.55,1.44l-2.08-53.75-10.34-7.86h-12.41v16.96l13.54,53.76,4.78-1.68c-1.96,4.73-3.92,9.46-5.88,14.19,10.88,2.31,21.76,4.61,32.64,6.92,1.65-7.1,3.31-14.2,4.96-21.3-6.89-2.9-13.78-5.79-20.67-8.69Z"/>
+    <path class="cls-6" d="m1751.94,1492.13c3.76-3.52,7.51-7.03,11.27-10.55l14.68,34.22-3.93,5.38,7.44,19.16-35.56-.55c-1.03-6.58-2.07-13.16-3.1-19.75,2.51-4.77,5.03-9.54,7.54-14.31.55-4.54,1.1-9.07,1.66-13.61Z"/>
+    <path class="cls-24" d="m1760.42,1540.02v-44.06h-.11l.11-.1-7.93-3.48-.55-.24-.47,3.83h0c-.4,3.26-.79,6.52-1.19,9.78l-7.54,14.31c1.03,6.58,2.07,13.16,3.1,19.75l14.58.23Z"/>
+    <polygon class="cls-37" points="1867.97 1559.23 1880.11 1547.51 1890.58 1548.47 1897.47 1576.18 1879.14 1577.15 1867.97 1559.23"/>
+    <path class="cls-31" d="m1688.77,1516.07l15.85-11.24,42.66,16.56,11.58,17.99c10.27-1.72,20.54-3.45,30.81-5.17,2.48,4.43,4.96,8.87,7.44,13.3,1.03,2.04,2.07,4.09,3.1,6.13l8.06-2.69c-1.86-2.83-3.72-5.65-5.58-8.48l4.34-6.82,6.2-.41,4.55,6,6.41-1.22,6.82,10.11-2.27,4.55,7.86,7.65c.57,4.39,1.15,8.78,1.72,13.16-10.29,1.65-20.59,3.31-30.88,4.96-9.28-1.84-18.56-3.68-27.84-5.51l-16.82.28c-3.77,2.57-7.54,5.15-11.3,7.72-8.91.92-17.83,1.84-26.74,2.76-7.37-3.93-14.75-7.86-22.12-11.79l-13.85-57.83Z"/>
+    <path class="cls-43" d="m1698.29,1559.23s32.88,6.62,33.5,6.62,10.96,23.36,10.96,23.36l-8.48,2.69-27.71,1.03-8.27-33.7Z"/>
+    <polygon class="cls-43" points="1832.89 1562.53 1851.92 1555.92 1874.87 1556.95 1888.51 1566.88 1885.21 1588.59 1862.91 1591.9 1843.44 1589.21 1841.16 1586.31 1831.86 1587.55 1830.41 1585.28 1824.21 1583.63 1833.93 1575.56 1832.89 1562.53"/>
+    <line class="cls-59" x1="1718" y1="1552.89" x2="1730.54" y2="1528.9"/>
+    <line class="cls-59" x1="1730.54" y1="1540.34" x2="1741.71" y2="1533.59"/>
+    <line class="cls-59" x1="1727.92" y1="1545.99" x2="1747.08" y2="1540.89"/>
+    <polyline class="cls-59" points="1720.51 1557.16 1727.92 1551.51 1744.46 1551.51 1755.77 1555.92"/>
+    <polyline class="cls-59" points="1724.27 1561.57 1734.13 1558.54 1750.53 1563.09"/>
+    <line class="cls-59" x1="1742.74" y1="1554.33" x2="1752.6" y2="1560.81"/>
+    <line class="cls-59" x1="1711.66" y1="1524.21" x2="1714" y2="1535.52"/>
+    <line class="cls-59" x1="1714.69" y1="1540.02" x2="1723.24" y2="1527.66"/>
+    <line class="cls-59" x1="1724.27" y1="1532.9" x2="1721.58" y2="1540.89"/>
+    <line class="cls-59" x1="1702.01" y1="1531.52" x2="1714.69" y2="1543.44"/>
+    <line class="cls-59" x1="1699.66" y1="1534.69" x2="1707.66" y2="1548.61"/>
+    <line class="cls-59" x1="1711.66" y1="1545.99" x2="1711.66" y2="1552.2"/>
+    <line class="cls-59" x1="1735.5" y1="1564.88" x2="1743.64" y2="1564.88"/>
+    <line class="cls-59" x1="1738.14" y1="1570.12" x2="1751.08" y2="1577.15"/>
+  </g>
+  <g id="fogGroup" data-name="雾气" style="opacity:1;transition:opacity 1.2s ease">
+    <rect class="cls-42" x="1551.81" y="1196.53" width="629.37" height="526.64" transform="translate(3326.35 -406.64) rotate(90)"/>
+  </g>
+  <g id="_门洞和路" data-name="门洞和路">
+    <path class="cls-49" d="m2093.22,1498.44c0-115.89-93.94-209.83-209.83-209.83s-209.83,93.94-209.83,209.83c0,67.22,31.62,127.05,80.79,165.45v54.62l13.93-17.67v-53.04c-44.68-34.48-73.47-88.56-73.47-149.37,0-104.15,84.43-188.57,188.57-188.57s188.57,84.43,188.57,188.57c0,66.96-34.9,125.76-87.51,159.22v37.01l15.17,26.39h.09v-47.98c56.37-37.62,93.5-101.79,93.5-174.64Z"/>
+    <path class="cls-47" d="m2061.54,1356.59c-5.54-7-11.51-13.73-17.92-20.14-43.12-43.12-100.45-66.87-161.44-66.87s-118.32,23.75-161.44,66.87c-6.41,6.41-12.38,13.14-17.92,20.14-31.73,40.11-48.95,89.38-48.95,141.3,0,26.08,4.36,51.48,12.7,75.39,11.17,32.02,29.49,61.36,54.17,86.04,4.31,4.31,8.77,8.41,13.35,12.33v46.85h20.25v-56.57c-5.46-4.27-10.71-8.8-15.72-13.58-8.21-7.84-15.78-16.34-22.63-25.42-11.38-15.09-20.76-31.77-27.74-49.64-9.13-23.39-14.14-48.82-14.14-75.39,0-54.5,21.07-104.17,55.49-141.3,38.03-41.03,92.35-66.76,152.57-66.76s114.54,25.73,152.57,66.76c34.42,37.13,55.49,86.8,55.49,141.3,0,26.58-5.01,52.01-14.14,75.39-15.3,39.21-42.17,72.68-76.39,96.19h-.31v51.58h20.25v-40.84c8.39-6.35,16.39-13.32,23.96-20.89,24.68-24.68,43.01-54.03,54.17-86.04,8.34-23.92,12.7-49.32,12.7-75.39,0-51.92-17.23-101.19-48.95-141.3Z"/>
+    <rect class="cls-2" x="1632.76" y="1221.8" width="467.47" height="526.64" transform="translate(3351.61 -381.38) rotate(90)"/>
+  </g>
+  <circle id="hitCircle" cx="1883.39" cy="1498.44" r="200" fill="transparent" style="cursor:none"/>
+</svg>
+</div>
+<div id="hint">移入门洞，拨开雾气</div>
+<div id="portfolio">
+  <div class="ph">
+    <div class="pt">吾 园</div>
+    <div class="ps">Portfolio · 作品集</div>
+    <nav>
+      <span data-filter="all" class="active">全部</span>
+      <span data-filter="平面">平面</span>
+      <span data-filter="空间">空间</span>
+      <span data-filter="影像">影像</span>
+      <span data-filter="about">关于</span>
+    </nav>
+  </div>
+  <div class="grid" id="cardGrid">
+    <div class="card" data-cat="空间">
+      <div class="ci"><svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#2e2820"/>
+        <circle cx="100" cy="70" r="52" fill="none" stroke="#b09860" stroke-width="1.5"/>
+        <circle cx="100" cy="70" r="36" fill="none" stroke="#8a7040" stroke-width="0.7"/>
+        <line x1="100" y1="18" x2="100" y2="122" stroke="#6a5030" stroke-width="0.5" stroke-dasharray="3 4"/>
+        <line x1="48" y1="70" x2="152" y2="70" stroke="#6a5030" stroke-width="0.5" stroke-dasharray="3 4"/>
+      </svg></div>
+      <div class="cl">月门入口<div class="ct">空间 · 2024</div></div>
+    </div>
+    <div class="card" data-cat="空间">
+      <div class="ci"><svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#8a9e84"/>
+        <polygon points="100,30 20,130 180,130" fill="none" stroke="#c8d8b8" stroke-width="0.8"/>
+        <polygon points="100,50 40,130 160,130" fill="none" stroke="#a8c098" stroke-width="0.6"/>
+        <polygon points="100,68 58,130 142,130" fill="none" stroke="#90b088" stroke-width="0.5"/>
+        <line x1="100" y1="30" x2="100" y2="130" stroke="#d8e8c8" stroke-width="0.6" opacity="0.6"/>
+        <rect x="82" y="98" width="36" height="32" fill="#607858" opacity="0.7"/>
+        <rect x="88" y="104" width="10" height="26" fill="#4a6042" opacity="0.8"/>
+        <rect x="102" y="104" width="10" height="26" fill="#4a6042" opacity="0.8"/>
+      </svg></div>
+      <div class="cl">园林空间研究<div class="ct">空间 · 2023</div></div>
+    </div>
+    <div class="card" data-cat="平面">
+      <div class="ci"><svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#ede6c8"/>
+        <rect x="48" y="20" width="8" height="100" fill="#2e2418" opacity="0.85"/>
+        <rect x="66" y="35" width="4" height="72" fill="#2e2418" opacity="0.6"/>
+        <rect x="80" y="15" width="12" height="110" fill="#2e2418" opacity="0.9"/>
+        <rect x="102" y="28" width="5" height="84" fill="#2e2418" opacity="0.55"/>
+        <rect x="117" y="40" width="9" height="60" fill="#2e2418" opacity="0.7"/>
+        <rect x="136" y="22" width="3" height="96" fill="#2e2418" opacity="0.45"/>
+        <rect x="148" y="50" width="6" height="50" fill="#2e2418" opacity="0.6"/>
+      </svg></div>
+      <div class="cl">笔墨系列<div class="ct">平面 · 2024</div></div>
+    </div>
+    <div class="card" data-cat="平面">
+      <div class="ci"><svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#d8d0b8"/>
+        <rect x="30" y="28" width="90" height="2.5" fill="#4a3a22" opacity="0.7"/>
+        <rect x="30" y="38" width="120" height="1.5" fill="#4a3a22" opacity="0.45"/>
+        <rect x="30" y="48" width="75" height="2" fill="#4a3a22" opacity="0.6"/>
+        <rect x="30" y="58" width="105" height="1.5" fill="#4a3a22" opacity="0.4"/>
+        <rect x="30" y="74" width="50" height="6" fill="#7a5a28" opacity="0.55"/>
+        <rect x="30" y="88" width="140" height="1.5" fill="#4a3a22" opacity="0.35"/>
+        <rect x="30" y="98" width="88" height="1.5" fill="#4a3a22" opacity="0.35"/>
+        <rect x="30" y="108" width="110" height="1.5" fill="#4a3a22" opacity="0.3"/>
+      </svg></div>
+      <div class="cl">字体排版实验<div class="ct">平面 · 2023</div></div>
+    </div>
+    <div class="card" data-cat="影像">
+      <div class="ci"><svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#201c18"/>
+        <circle cx="100" cy="70" r="60" fill="none" stroke="#c89040" stroke-width="0.6" opacity="0.5"/>
+        <circle cx="100" cy="70" r="46" fill="none" stroke="#c89040" stroke-width="0.8" opacity="0.65"/>
+        <circle cx="100" cy="70" r="32" fill="none" stroke="#d8a050" stroke-width="1" opacity="0.8"/>
+        <circle cx="100" cy="70" r="18" fill="none" stroke="#e8b860" stroke-width="1.5" opacity="0.9"/>
+        <circle cx="100" cy="70" r="6" fill="#e8c870" opacity="0.95"/>
+      </svg></div>
+      <div class="cl">光影记录<div class="ct">影像 · 2024</div></div>
+    </div>
+    <div class="card" data-cat="影像">
+      <div class="ci"><svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#b09a7a"/>
+        <path d="M100,22 C82,22 70,32 68,50 C66,62 70,72 76,80 L72,118 L128,118 L124,80 C130,72 134,62 132,50 C130,32 118,22 100,22 Z" fill="#7a6048" opacity="0.85"/>
+        <ellipse cx="100" cy="118" rx="30" ry="4" fill="#6a5038" opacity="0.6"/>
+        <path d="M76,80 Q100,88 124,80" fill="none" stroke="#c8b090" stroke-width="0.8" opacity="0.6"/>
+        <path d="M74,62 Q100,68 126,62" fill="none" stroke="#c8b090" stroke-width="0.6" opacity="0.4"/>
+      </svg></div>
+      <div class="cl">器物美学<div class="ct">影像 · 2023</div></div>
+    </div>
+  </div>
+  <div id="aboutSec">
+    <div class="at">关 于</div>
+    <div class="ab">
+      专注于<em>空间叙事</em>与<em>视觉语言</em>的设计师，游走于园林美学与数字媒介之间。<br>
+      以中式传统空间为研究底色，探索感知、氛围与界面之间的张力。
+    </div>
+    <div class="sk-wrap">
+      <div class="sk-row">
+        <span class="sk-label">设计</span>
+        <div class="sk-tags">
+          <span class="sk-tag">空间叙事</span><span class="sk-tag">品牌视觉</span><span class="sk-tag">字体排版</span><span class="sk-tag">交互原型</span>
+        </div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-label">工具</span>
+        <div class="sk-tags">
+          <span class="sk-tag">Figma</span><span class="sk-tag">Illustrator</span><span class="sk-tag">After Effects</span><span class="sk-tag">Rhino</span>
+        </div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-label">研究</span>
+        <div class="sk-tags">
+          <span class="sk-tag">园林美学</span><span class="sk-tag">影像叙事</span><span class="sk-tag">感知设计</span>
+        </div>
+      </div>
+    </div>
+    <div class="ct-list">
+      <div class="ct-row"><span class="ct-lbl">邮件</span>your@email.com</div>
+      <div class="ct-row"><span class="ct-lbl">主页</span>portfolio.example.com</div>
+    </div>
+  </div>
+  <button class="bb" id="back">← 返回入口</button>
+</div>
+<script>
+/* ── Loader controller ── */
+var _ldrEl=document.getElementById('loader');
+var _ldrS=[document.getElementById('ls0'),document.getElementById('ls1'),document.getElementById('ls2')];
+var _ldrPrompt=document.getElementById('ldr-prompt');
+var _DH=72,_ldrCur=0,_ldrTgt=0,_ldrReady=false,_ldrDone=false;
+
+function _ldrDisplay(n){
+  n=Math.min(100,Math.max(0,Math.round(n)));
+  _ldrS[0].style.transform='translateY('+(-Math.floor(n/100)*_DH)+'px)';
+  _ldrS[1].style.transform='translateY('+(-Math.floor((n%100)/10)*_DH)+'px)';
+  _ldrS[2].style.transform='translateY('+(-(n%10)*_DH)+'px)';
+}
+var _ldrTimer=setInterval(function(){
+  if(_ldrDone)return;
+  if(_ldrTgt<82)_ldrTgt=Math.min(82,_ldrTgt+Math.random()*5+2);
+  _ldrCur+=(_ldrTgt-_ldrCur)*0.1;
+  _ldrDisplay(_ldrCur);
+  if(_ldrReady&&Math.round(_ldrCur)>=100){
+    _ldrDone=true;clearInterval(_ldrTimer);
+    _ldrDisplay(100);
+    setTimeout(function(){
+      _ldrPrompt.classList.add('show');
+      _ldrEl.classList.add('ready');
+    },300);
+  }
+},50);
+function _ldrFinish(){if(_ldrDone)return;_ldrTgt=100;_ldrReady=true;}
+
+_ldrEl.addEventListener('click',function(e){
+  e.stopPropagation();
+  if(!_ldrEl.classList.contains('ready'))return;
+  if(window._audioUnlock)window._audioUnlock();
+  _ldrEl.style.pointerEvents='none';
+  _ldrEl.classList.add('done');
+  setTimeout(function(){_ldrEl.style.display='none';},1050);
+});
+
+/* ── Main ── */
+(function(){
+  var fogGroup=document.getElementById('fogGroup');
+  var hint=document.getElementById('hint');
+  var portfolio=document.getElementById('portfolio');
+  var gateWrap=document.getElementById('gateWrap');
+  var back=document.getElementById('back');
+  var svgEl=document.getElementById('mainSVG');
+
+  var gardenAudio=new Audio('../交互音频素材/园林背景 短.m4a');
+  gardenAudio.loop=true;
+  gardenAudio.preload='auto';
+  var gardenFadeTimer=null;
+
+  // Called by loader click — unlocks audio under browser autoplay policy
+  window._audioUnlock=function(){
+    gardenAudio.play().then(function(){gardenAudio.pause();gardenAudio.currentTime=0;}).catch(function(){});
+  };
+
+  // Signal loader when assets are ready
+  var _aOk=false,_wOk=false;
+  function _tryFinish(){if(_aOk&&_wOk)_ldrFinish();}
+  gardenAudio.addEventListener('canplaythrough',function(){_aOk=true;_tryFinish();},{once:true});
+  window.addEventListener('load',function(){_wOk=true;_tryFinish();},{once:true});
+  setTimeout(function(){_aOk=true;_wOk=true;_tryFinish();},7000);
+
+  var VX=1199,VY=1082,VW=1365,VH=750;
+  var GCX=1883.39,GCY=1498.44,GR=200;
+  var inside=false,entered=false,af;
+  var ncRing=document.getElementById('nc-ring');
+  var ncDot=document.getElementById('nc-dot');
+
+  function toSVGCoords(e){
+    var vw=window.innerWidth,vh=window.innerHeight;
+    var screenAR=vw/vh,viewAR=VW/VH;
+    var scale,ox=0,oy=0;
+    if(screenAR>viewAR){scale=vw/VW;oy=(vh-VH*scale)/2;}
+    else{scale=vh/VH;ox=(vw-VW*scale)/2;}
+    return{x:(e.clientX-ox)/scale+VX,y:(e.clientY-oy)/scale+VY};
+  }
+
+  function inGate(e){
+    var p=toSVGCoords(e);
+    return Math.hypot(p.x-GCX,p.y-GCY)<GR;
+  }
+
+  function startGardenAudio(){
+    if(gardenFadeTimer){clearInterval(gardenFadeTimer);gardenFadeTimer=null;}
+    gardenAudio.volume=1;
+    gardenAudio.play().catch(function(){});
+  }
+
+  function stopGardenAudio(){
+    if(gardenFadeTimer) return;
+    gardenFadeTimer=setInterval(function(){
+      if(gardenAudio.volume>0.08){
+        gardenAudio.volume=Math.max(0,gardenAudio.volume-0.08);
+      }else{
+        gardenAudio.volume=0;
+        gardenAudio.pause();
+        gardenAudio.currentTime=0;
+        clearInterval(gardenFadeTimer);
+        gardenFadeTimer=null;
+      }
+    },30);
+  }
+
+  function tick(){
+    af=requestAnimationFrame(tick);
+  }
+  tick();
+
+  document.addEventListener('mousemove',function(e){
+    if(!_ldrEl.classList.contains('done'))return;
+    var now=inGate(e);
+    if(now!==inside){
+      inside=now;
+      if(inside){
+        fogGroup.style.opacity='0';
+        hint.style.opacity='0';
+        hint.textContent='点击，入园';
+        setTimeout(function(){hint.style.opacity='1';},450);
+        ncRing.style.width='58px';ncRing.style.height='58px';ncDot.style.transform='translate(-50%,-50%) scale(1.6)';
+        startGardenAudio();
+      }else{
+        fogGroup.style.opacity='1';
+        hint.style.opacity='0';
+        hint.textContent='移入门洞，拨开雾气';
+        setTimeout(function(){hint.style.opacity='1';},450);
+        ncRing.style.width='38px';ncRing.style.height='38px';ncDot.style.transform='translate(-50%,-50%) scale(1)';
+        stopGardenAudio();
+      }
+    }
+  });
+
+  document.addEventListener('click',function(e){
+    if(inGate(e)&&!entered){
+      entered=true;hint.style.opacity='0';
+      gateWrap.style.transform='translateZ(320px)';
+      gateWrap.style.opacity='0';
+      setTimeout(function(){window.location.href='个人主页.html';},1100);
+      cancelAnimationFrame(af);
+    }
+  });
+
+  back.addEventListener('click',function(){
+    entered=false;portfolio.classList.remove('on');
+    gateWrap.style.transition='none';
+    gateWrap.style.transform='translateZ(0)';
+    gateWrap.style.opacity='1';
+    requestAnimationFrame(function(){gateWrap.style.transition='';});
+    inside=false;
+    fogGroup.style.opacity='1';
+    hint.textContent='移入门洞，拨开雾气';hint.style.opacity='1';
+    stopGardenAudio();
+    tick();
+  });
+})();
+</script>
+
+<script>
+/* ── Neon cursor ── */
+(function () {
+  var dot  = document.getElementById('nc-dot');
+  var ring = document.getElementById('nc-ring');
+
+  var mouseX = window.innerWidth  / 2;
+  var mouseY = window.innerHeight / 2;
+  var ringX  = mouseX, ringY = mouseY;
+  var visible = false;
+
+  document.addEventListener('mousemove', function(e) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dot.style.left = mouseX + 'px';
+    dot.style.top  = mouseY + 'px';
+    if (!visible) {
+      visible = true;
+      dot.style.opacity  = '1';
+      ring.style.opacity = '1';
+    }
+  });
+
+  (function animateRing() {
+    ringX += (mouseX - ringX) * 0.13;
+    ringY += (mouseY - ringY) * 0.13;
+    ring.style.left = ringX + 'px';
+    ring.style.top  = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  })();
+
+  document.addEventListener('mouseleave', function() {
+    dot.style.opacity  = '0';
+    ring.style.opacity = '0';
+    visible = false;
+  });
+
+  document.addEventListener('mousedown', function() {
+    dot.style.transform  = 'translate(-50%,-50%) scale(0.75)';
+    ring.style.transform = 'translate(-50%,-50%) scale(0.85)';
+  });
+  document.addEventListener('mouseup', function() {
+    dot.style.transform  = 'translate(-50%,-50%) scale(1)';
+    ring.style.transform = 'translate(-50%,-50%) scale(1)';
+  });
+
+  document.querySelectorAll('.card, nav span, .bb, .nav-links a').forEach(function(el) {
+    el.addEventListener('mouseenter', function() {
+      dot.style.transform    = 'translate(-50%,-50%) scale(1.6)';
+      ring.style.width       = '58px';
+      ring.style.height      = '58px';
+    });
+    el.addEventListener('mouseleave', function() {
+      dot.style.transform    = 'translate(-50%,-50%) scale(1)';
+      ring.style.width       = '38px';
+      ring.style.height      = '38px';
+    });
+  });
+})();
+</script>
+</body>
+</html>
