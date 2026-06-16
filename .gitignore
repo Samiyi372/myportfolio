@@ -4,7 +4,7 @@
 *.tmp
 figma排版/illustration.svg
 
-# Oversized demo videos (exceed GitHub's 100MB limit)
+# Oversized source videos (replaced by compressed .webm versions actually used by the site)
 交互音频素材/视频素材/kettlesyard视频.mp4
 交互音频素材/视频素材/202606141307(1).mp4
 作品集相关图片/制品/宣传册照片流/kettlesyard视频.mp4
