@@ -113,21 +113,21 @@ body { cursor: none; }
 
 /* ── About Section ── */
 #about-section {
-  padding: 6vw 175px 8vw 180px;
+  padding: 6vw clamp(24px, 9vw, 175px) 8vw clamp(24px, 9.3vw, 180px);
   background: #f8f6f0;
   font-family: "Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
 }
 .about-inner {
   display: grid;
-  grid-template-columns: 250px 350px 350px;
+  grid-template-columns: minmax(180px,250px) minmax(260px,350px) minmax(260px,350px);
   column-gap: 2vw;
   align-items: start;
-  width: fit-content;
+  width: min(997px, 100%);
   margin: 0 auto;
   transform: translateX(5px);
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 900px) {
   #about-section { padding: 10vw 6vw 14vw; }
   .about-inner {
     grid-template-columns: 1fr;
