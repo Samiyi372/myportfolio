@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/界面矢量/主页入口.html" }
+  ]
+}
