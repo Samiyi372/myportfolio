@@ -112,7 +112,15 @@ html,body{background:#f8f6f0;color:#2e2416;min-height:100vh;}
 
 /* ── Work items ── */
 .work-item{display:flex;flex-direction:column;}
-.img-wrap{display:block;overflow:visible;text-decoration:none;cursor:none;}
+.img-wrap{display:block;overflow:visible;text-decoration:none;cursor:none;position:relative;}
+.ticket-img-hover{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;object-position:center;
+  opacity:0;transition:opacity 0.35s ease;
+  pointer-events:none;
+}
+.img-wrap:hover .ticket-img-hover{opacity:1;}
 
 .img-wrap img{
   display:block;width:100%;height:auto;
@@ -150,6 +158,66 @@ body{cursor:none;}
   transition:width .2s ease,height .2s ease,opacity .2s;
 }
 
+/* ── Ticket Modal ── */
+#ticket-modal{
+  display:none;position:fixed;inset:0;z-index:10000;
+  background:rgba(0,0,0,0.72);
+  align-items:center;justify-content:center;
+}
+#ticket-modal.active{display:flex;}
+#ticket-modal-card{
+  position:relative;
+  background:#f8f6f0;
+  max-width:600px;width:90vw;
+  padding:52px 48px 44px;
+  font-family:"Huiwen-Fangsong","汇文仿宋",fangsong,serif;
+  max-height:90vh;overflow-y:auto;
+}
+#ticket-modal-close{
+  position:absolute;top:24px;right:28px;
+  width:32px;height:32px;
+  background:none;border:none;cursor:none;
+  display:flex;align-items:center;justify-content:center;
+}
+#ticket-modal-close::before,#ticket-modal-close::after{
+  content:'';position:absolute;
+  width:20px;height:1px;background:#2e2416;
+}
+#ticket-modal-close::before{transform:rotate(45deg);}
+#ticket-modal-close::after{transform:rotate(-45deg);}
+.modal-title{
+  font-size:32px;font-weight:400;
+  color:#2e2416;letter-spacing:0.04em;
+  margin-bottom:28px;line-height:1;
+}
+.modal-lead{
+  font-size:16px;color:#2e2416;
+  line-height:1.85;letter-spacing:0.04em;
+  margin-bottom:18px;
+}
+.modal-body-text{
+  font-size:13px;color:#706d64;
+  line-height:1.95;letter-spacing:0.03em;
+  margin-bottom:14px;
+}
+.modal-divider{
+  border:none;border-top:1px solid rgba(46,36,22,0.12);
+  margin:24px 0;
+}
+.modal-link-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;text-decoration:none;
+  font-size:13px;color:#706d64;letter-spacing:0.12em;
+  cursor:none;
+}
+.modal-link-row:hover{color:#2e2416;}
+.modal-link-row::after{
+  content:'';display:inline-block;
+  width:14px;height:14px;flex-shrink:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cline x1='2' y1='12' x2='12' y2='2' stroke='%23706d64' stroke-width='0.7' stroke-linecap='square'/%3E%3Cline x1='2' y1='2' x2='12' y2='2' stroke='%23706d64' stroke-width='0.7' stroke-linecap='square'/%3E%3Cline x1='12' y1='2' x2='12' y2='12' stroke='%23706d64' stroke-width='0.7' stroke-linecap='square'/%3E%3C/svg%3E");
+  background-size:contain;background-repeat:no-repeat;
+}
+
 /* ── Responsive ── */
 @media(max-width:960px){
   .ux-grid{grid-template-columns:1fr;}
@@ -166,6 +234,20 @@ body{cursor:none;}
 <body>
 
 <div id="copy-toast">邮箱已复制</div>
+
+<!-- Ticket Project Modal -->
+<div id="ticket-modal">
+  <div id="ticket-modal-card">
+    <button id="ticket-modal-close" aria-label="关闭"></button>
+    <h2 class="modal-title">在线票根生成器</h2>
+    <p class="modal-lead">看完一场剧，除了记忆，你还想留下什么？</p>
+    <p class="modal-body-text">越来越多的剧场转向电子票，观众曾经习以为常的「实体票」正在消失。这个项目是一个纯前端的票根生成工具——用户填入演出信息（剧名、剧场、日期、座位），即可实时预览一张带有纸张质感的仿真票根，支持导出为高清 PNG 用于社交分享，也支持 A4 拼版打印模式，下载后拿去打印店裁切，就能得到一张尺寸接近真实剧场票的实体收藏。</p>
+    <p class="modal-body-text">票根分为主票和副票：主票承载演出的基本信息，副票则留给更私人的部分：打分、观后感、用户拍摄的剧场照片。字体、配色、做旧纹理都经过打磨，目标是让导出的图片看起来不像浏览器截图，而像一张真正被保存过的票根。</p>
+    <hr class="modal-divider">
+    <a class="modal-link-row" href="https://www.xiaohongshu.com/discovery/item/6a45542a00000000220153f3?source=webshare&xhsshare=pc_web&xsec_token=ABz-DJbedZrDof3e_wEVvyqKkYMhjim_fG5Hfmg9gECFU=&xsec_source=pc_share" target="_blank" rel="noopener">小红书分享帖 · 超过一千位热爱攒票根的朋友的反馈</a>
+    <a class="modal-link-row" href="https://www.physicalticketgenerator.com/" target="_blank" rel="noopener">网站原址 · physicalticketgenerator.com</a>
+  </div>
+</div>
 <div id="nc-dot"></div>
 <div id="nc-ring"></div>
 
@@ -188,10 +270,17 @@ body{cursor:none;}
 <div class="grid-wrap">
   <div class="ux-grid">
     <div class="work-item">
-      <a class="img-wrap" href="https://storyweave-web-k2nl.vercel.app/index-zh.html" target="_blank" rel="noopener">
+      <a class="img-wrap" href="https://www.storyweave.market/index-zh.html" target="_blank" rel="noopener">
         <img src="../作品集相关图片/交互/手机界面展示.png" alt="StoryWeave">
       </a>
       <div class="caption"><div class="cap-meta">StoryWeave, 沉浸式步行导览产品, 2026</div></div>
+    </div>
+    <div class="work-item" id="ticket-project">
+      <a class="img-wrap" href="#" rel="noopener" id="ticket-img-trigger">
+        <img src="../figma排版/ticket Default.png" alt="在线票根生成器" loading="lazy" style="aspect-ratio:3/2;object-fit:cover;object-position:center;">
+        <img class="ticket-img-hover" src="../figma排版/ticket hover.png" alt="" aria-hidden="true" style="aspect-ratio:3/2;object-fit:cover;object-position:center;">
+      </a>
+      <div class="caption" id="ticket-cap-trigger" style="cursor:none;"><div class="cap-meta">在线票根生成器, 2026</div></div>
     </div>
     <div class="work-item">
       <a class="img-wrap" href="https://www.figma.com/proto/yDyexZzyZU0okk1ds7gb85/Kettle-s-yard-main-page?node-id=1-2&p=f&viewport=363%2C25%2C0.02&t=o9OP6rOoUrF89Kli-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=1%3A2&page-id=0%3A1" target="_blank" rel="noopener">
@@ -205,7 +294,37 @@ body{cursor:none;}
 </div>
 
 <script>
+
+/* ── Ticket modal ── */
+(function () {
+  const modal    = document.getElementById('ticket-modal');
+  const closeBtn = document.getElementById('ticket-modal-close');
+  const imgTrig  = document.getElementById('ticket-img-trigger');
+  const capTrig  = document.getElementById('ticket-cap-trigger');
+
+  const ncDot  = document.getElementById('nc-dot');
+  const ncRing = document.getElementById('nc-ring');
+
+  function openModal() {
+    modal.classList.add('active');
+    if (ncDot)  ncDot.style.zIndex  = '10002';
+    if (ncRing) ncRing.style.zIndex = '10001';
+  }
+  function closeModal() {
+    modal.classList.remove('active');
+    if (ncDot)  ncDot.style.zIndex  = '9999';
+    if (ncRing) ncRing.style.zIndex = '9998';
+  }
+
+  imgTrig.addEventListener('click', e => { e.preventDefault(); openModal(); });
+  capTrig.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+})();
+
 /* ── Entrance animation ── */
+
 const items = document.querySelectorAll('.work-item');
 items.forEach((el,i)=>{
   el.style.opacity='0'; el.style.transform='translateY(14px)';
@@ -302,5 +421,6 @@ requestAnimationFrame(()=>requestAnimationFrame(()=>{
   });
 })();
 </script>
+
 </body>
 </html>
