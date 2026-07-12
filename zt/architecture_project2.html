@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>建筑项目 · 作品集</title>
+<style>
+@font-face {
+  font-family: "Huiwen-Fangsong";
+  src: url("../fonts/huiwen-fangsong.ttf") format("truetype");
+  font-display: swap;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #f8f6f0;
+  font-family: "Myriad Pro", Arial, "Noto Serif SC", serif;
+}
+
+body {
+  animation: fadeIn 1.2s ease both;
+  cursor: none;
+}
+
+/* ── Neon cursor ── */
+#nc-dot{
+  position:fixed;width:8px;height:8px;
+  background:#1a1a1a;border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:transform .12s ease,opacity .2s;
+}
+#nc-ring{
+  position:fixed;width:38px;height:38px;
+  border:1.5px solid #1a1a1a;border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:width .2s ease,height .2s ease,opacity .2s;
+}
+
+/* ── Top Navigation ── */
+#topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 25px 1.5625vw 0;
+  pointer-events: none;
+}
+#topnav .nav-name {
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  color: #2e2416;
+  font-weight: 400;
+  font-family: "Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  pointer-events: all;
+}
+#topnav .nav-links {
+  display: flex;
+  gap: 1.46vw;
+  pointer-events: all;
+}
+#topnav .nav-links a {
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  color: #a1a1a1;
+  text-decoration: none;
+  font-family: "Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  font-weight: 400;
+  transition: color .2s;
+}
+#topnav .nav-links a:hover { color: #2e2416; }
+
+/* ── Back Link ── */
+.back-link {
+  position: fixed;
+  top: 80px;
+  left: 1.5625vw;
+  z-index: 199;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: #9a8a68;
+  text-decoration: none;
+  transition: color .2s;
+  pointer-events: all;
+}
+.back-link:hover { color: #2e2416; }
+.back-link::before { content: "← "; }
+
+/* ── Main Layout ── */
+.container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 100px;
+}
+
+/* ── Left: Image Gallery wrapper ── */
+.gallery-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ── Left: Image Gallery (white background) ── */
+.gallery {
+  width: 760px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 80px 4rem 80px;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  scroll-behavior: smooth;
+  background: #ffffff;
+}
+
+.gallery::before {
+  content: "";
+  display: block;
+  min-height: calc((100vh - 100px - 600px) / 2 + 80px);
+  flex-shrink: 0;
+}
+
+.gallery::-webkit-scrollbar {
+  width: 4px;
+}
+.gallery::-webkit-scrollbar-track {
+  background: transparent;
+}
+.gallery::-webkit-scrollbar-thumb {
+  background: rgba(100, 80, 50, 0.2);
+  border-radius: 2px;
+}
+
+.gallery-item {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 2.5rem;
+  flex-shrink: 0;
+}
+
+.gallery-item img {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  display: block;
+  border-radius: 1px;
+}
+
+/* ── Right: Text Description (original background) ── */
+.description {
+  width: 380px;
+  flex-shrink: 0;
+  padding: 0 2.5rem 4rem 1.5rem;
+  border-left: 0.5px solid rgba(100, 80, 50, 0.12);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  background: #f8f6f0;
+}
+
+.description::-webkit-scrollbar {
+  width: 4px;
+}
+.description::-webkit-scrollbar-track {
+  background: transparent;
+}
+.description::-webkit-scrollbar-thumb {
+  background: rgba(100, 80, 50, 0.2);
+  border-radius: 2px;
+}
+
+.project-title {
+  font-size: 20px;
+  color: #2e2416;
+  font-weight: 400;
+  letter-spacing: 0.10em;
+  margin-bottom: 0.5rem;
+  font-family: "Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  line-height: 1.6;
+}
+
+.project-subtitle {
+  font-size: 10px;
+  color: #9a8a68;
+  letter-spacing: 0.25em;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 0.5px solid rgba(100, 80, 50, 0.15);
+}
+
+.section-text {
+  font-size: 12.5px;
+  color: #4a3a22;
+  line-height: 2.1;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.2rem;
+}
+
+/* ── Lightbox ── */
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.85);
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+}
+#lightbox.show {
+  display: flex;
+}
+#lightbox .img-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#lightbox img {
+  max-width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+  border-radius: 2px;
+  transition: transform 0.15s ease;
+}
+#lightbox .close-btn {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  font-size: 28px;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: color .2s;
+  line-height: 1;
+  z-index: 10001;
+}
+#lightbox .close-btn:hover {
+  color: #fff;
+}
+
+#lightbox .zoom-hint {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.25em;
+  pointer-events: none;
+  z-index: 10001;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+#lightbox.show .zoom-hint {
+  opacity: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    padding-top: 80px;
+  }
+  .gallery {
+    max-height: none;
+    padding: 0 1rem 1rem 1rem;
+  }
+  .gallery-item {
+    max-width: 100%;
+  }
+  .gallery-item img {
+    max-width: 100%;
+  }
+  .description {
+    width: 100%;
+    padding: 0 1.5rem 3rem 1.5rem;
+    border-left: none;
+    border-top: 0.5px solid rgba(100, 80, 50, 0.12);
+    max-height: none;
+    overflow-y: visible;
+  }
+  .back-link {
+    top: 70px;
+    left: 1rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="nc-dot"></div>
+<div id="nc-ring"></div>
+
+<div id="topnav">
+  <span class="nav-name">Zhitian</span>
+  <div class="nav-links">
+    <a href="about.html#card-section">WORK</a>
+    <a href="about.html#about-section">ABOUT</a>
+    <a href="#">CONTACT</a>
+  </div>
+</div>
+
+<a href="architecture.html" class="back-link">返回</a>
+
+<div class="container">
+
+  <!-- Left: Image Gallery -->
+  <div class="gallery-wrap">
+  <div class="gallery" id="gallery">
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_01.png" alt="项目图片 1" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_02.png" alt="项目图片 2" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_03.gif" alt="项目图片 3" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_04.png" alt="项目图片 4" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_05.png" alt="项目图片 5" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_07.png" alt="项目图片 6" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item" style="max-width:300px;">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_08.jpeg" alt="项目图片 7" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_09.png" alt="项目图片 8" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_10.png" alt="项目图片 9" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_11.png" alt="项目图片 10" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_12.png" alt="项目图片 11" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目2/项目2排版_页面_13.png" alt="项目图片 12" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+  </div>
+  </div>
+
+  <!-- Right: Description -->
+  <div class="description">
+    <h1 class="project-title">博物馆中的时间与触觉：菲茨威廉博物馆改造设计</h1>
+    <div class="project-subtitle">2024</div>
+
+    <p class="section-text">
+      项目"博物馆中的时间"围绕"时间之廊"的理念展开，通过一系列空间干预，在建筑、藏品与参观者之间建立起一种新的叙事秩序。作为博物馆的空间前奏，新增的坡道走廊将原有入口与展厅连接在一起，将原本断裂的观展路径转化为一条缓缓上升的时间轴。
+    </p>
+
+    <p class="section-text">
+      设计的中枢是一条贯穿新旧建筑的线性坡道，它不仅是动线组织的关键，更成为了整个展陈体验在空间尺度上的核心锚点。这条坡道在增强垂直向连接性的同时，保持了不同历史时期展品之间的视觉连续性。沿坡道两侧，从旧石器时代的燧石刮削器到20世纪的油画，展品依时间顺序依次展开。博物馆本身的历史遗存、那些曾被遗忘的旧窗框，被改造为展台，在保留建筑记忆的同时，赋予陈旧构件新的功能生命。
+    </p>
+
+    <p class="section-text">
+      该项目通过建筑改造与展陈策略的一体化整合，平衡了历史保护、空间叙事与参观体验。原有的北立面被打开，自然光得以重新注入室内；废弃窗框被转化而来的展台，其尺度与形态恰好适配从陶片到雕塑的各种展品，形成一种谦逊而灵活的陈设语言。当参观者沿着坡道缓缓上行，窗外街景与室内文物交替呈现，光影随时间推移而变幻，营造出一种在历史与当下之间穿行的沉浸氛围。最终呈现的空间既承载着时间的厚重，又保持着流动的轻盈，旧建筑的肌理与新功能的介入在此达成微妙的平衡。
+    </p>
+
+    <p class="section-text">
+      为了实现坡道与展厅之间复杂的空间交接，设计团队发展出一套精准的标高控制系统，将新旧结构之间的高差转化为展陈叙事的节奏性停顿。这一策略不仅强化了整体空间构图的清晰度，也使结构逻辑本身成为可被感知的展陈语言。设计并未刻意掩饰加建部分的当代性，而是将其作为一种与历史对话的姿态予以彰显，使工程理性与空间诗学融为一体。"博物馆中的时间"展现了细致的改造设计如何将一次寻常的博物馆参观转化为穿越历史的漫步，将展品、建筑与人的行走编织在一起，共同谱写出关于时间的空间叙事。
+    </p>
+
+    <p class="section-text">
+      延伸项目"渐强"将焦点转向博物馆的包容性问题，试图打破"禁止触摸"的冰冷禁令，在视觉主导的展陈体系中为触觉体验开辟一席之地。菲茨威廉博物馆厚重的石墙阻挡了大部分自然光，也无意间筑起了一道感官的壁垒——视障人群被隔绝在丰富的馆藏之外。项目以"触觉导览"为核心策略，在入口处引入触觉地图与材质感应板，让参观者通过指尖阅读空间；在展厅内设置触摸工坊与触摸巡览路线，让文物复制品成为可触碰的故事。同时，楼梯被饰以高饱和度的色彩，以辅助低视力人群辨识路径；天窗与敞廊的增设则将久违的日光带回室内。这一系列干预手段并不试图改变既有建筑的气质，而是像一层温柔的触媒，让原本静默的空间开始与更多人的身体对话。最终，触觉、色彩与光线共同织成一张感知的网络，将博物馆从一座"观看的圣殿"转变为一片"可触摸的原野"。
+    </p>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <span class="close-btn" onclick="closeLightbox()">✕</span>
+  <div class="img-wrap">
+    <img id="lightbox-img" src="" alt="查看大图">
+  </div>
+  <div class="zoom-hint">滚轮缩放 · 点击关闭</div>
+</div>
+
+<script>
+/* ── Neon cursor (matching architecture.html) ── */
+(function () {
+  const dot  = document.getElementById('nc-dot');
+  const ring = document.getElementById('nc-ring');
+
+  let mouseX = window.innerWidth  / 2;
+  let mouseY = window.innerHeight / 2;
+  let ringX  = mouseX, ringY = mouseY;
+  let visible = false;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dot.style.left = mouseX + 'px';
+    dot.style.top  = mouseY + 'px';
+    if (!visible) {
+      visible = true;
+      dot.style.opacity  = '1';
+      ring.style.opacity = '1';
+    }
+  });
+
+  (function animateRing() {
+    ringX += (mouseX - ringX) * 0.13;
+    ringY += (mouseY - ringY) * 0.13;
+    ring.style.left = ringX + 'px';
+    ring.style.top  = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  })();
+
+  document.addEventListener('mouseleave', () => {
+    dot.style.opacity  = '0';
+    ring.style.opacity = '0';
+    visible = false;
+  });
+
+  document.addEventListener('mousedown', () => {
+    dot.style.transform  = 'translate(-50%,-50%) scale(0.75)';
+    ring.style.transform = 'translate(-50%,-50%) scale(0.85)';
+  });
+  document.addEventListener('mouseup', () => {
+    dot.style.transform  = 'translate(-50%,-50%) scale(1)';
+    ring.style.transform = 'translate(-50%,-50%) scale(1)';
+  });
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      dot.style.transform    = 'translate(-50%,-50%) scale(1.6)';
+      ring.style.width       = '58px';
+      ring.style.height      = '58px';
+      ring.style.borderColor = '#1a1a1a';
+    });
+    el.addEventListener('mouseleave', () => {
+      dot.style.transform    = 'translate(-50%,-50%) scale(1)';
+      ring.style.width       = '38px';
+      ring.style.height      = '38px';
+      ring.style.borderColor = '#1a1a1a';
+    });
+  });
+})();
+
+/* ── Lightbox with zoom ── */
+var lbScale = 1;
+
+function openLightbox(src) {
+  var img = document.getElementById('lightbox-img');
+  img.src = src;
+  lbScale = 1;
+  img.style.transform = 'scale(1)';
+  document.getElementById('lightbox').classList.add('show');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('show');
+}
+
+document.getElementById('lightbox').addEventListener('wheel', function(e) {
+  e.preventDefault();
+  var img = document.getElementById('lightbox-img');
+  lbScale += e.deltaY > 0 ? -0.1 : 0.1;
+  lbScale = Math.max(0.2, Math.min(5, lbScale));
+  img.style.transform = 'scale(' + lbScale + ')';
+}, { passive: false });
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+</body>
+</html>

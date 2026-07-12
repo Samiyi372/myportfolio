@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>建筑项目 · 作品集</title>
+<style>
+@font-face {
+  font-family: "Huiwen-Fangsong";
+  src: url("../fonts/huiwen-fangsong.ttf") format("truetype");
+  font-display: swap;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #f8f6f0;
+  font-family: "Myriad Pro", Arial, "Noto Serif SC", serif;
+}
+
+body {
+  animation: fadeIn 1.2s ease both;
+  cursor: none;
+}
+
+/* ── Neon cursor ── */
+#nc-dot{
+  position:fixed;width:8px;height:8px;
+  background:#1a1a1a;border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:transform .12s ease,opacity .2s;
+}
+#nc-ring{
+  position:fixed;width:38px;height:38px;
+  border:1.5px solid #1a1a1a;border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:width .2s ease,height .2s ease,opacity .2s;
+}
+
+/* ── Top Navigation ── */
+#topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 25px 1.5625vw 0;
+  pointer-events: none;
+}
+#topnav .nav-name {
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  color: #2e2416;
+  font-weight: 400;
+  font-family: "Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  pointer-events: all;
+}
+#topnav .nav-links {
+  display: flex;
+  gap: 1.46vw;
+  pointer-events: all;
+}
+#topnav .nav-links a {
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  color: #a1a1a1;
+  text-decoration: none;
+  font-family: "Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  font-weight: 400;
+  transition: color .2s;
+}
+#topnav .nav-links a:hover { color: #2e2416; }
+
+/* ── Back Link ── */
+.back-link {
+  position: fixed;
+  top: 80px;
+  left: 1.5625vw;
+  z-index: 199;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: #9a8a68;
+  text-decoration: none;
+  transition: color .2s;
+  pointer-events: all;
+}
+.back-link:hover { color: #2e2416; }
+.back-link::before { content: "← "; }
+
+/* ── Main Layout ── */
+.container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 100px;
+}
+
+/* ── Left: Image Gallery wrapper ── */
+.gallery-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ── Left: Image Gallery (white background) ── */
+.gallery {
+  width: 760px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 80px 4rem 80px;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  scroll-behavior: smooth;
+  background: #ffffff;
+}
+
+.gallery::before {
+  content: "";
+  display: block;
+  min-height: calc((100vh - 100px - 600px) / 2 + 80px);
+  flex-shrink: 0;
+}
+
+.gallery::-webkit-scrollbar {
+  width: 4px;
+}
+.gallery::-webkit-scrollbar-track {
+  background: transparent;
+}
+.gallery::-webkit-scrollbar-thumb {
+  background: rgba(100, 80, 50, 0.2);
+  border-radius: 2px;
+}
+
+.gallery-item {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 2.5rem;
+  flex-shrink: 0;
+}
+
+.gallery-item img {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  display: block;
+  border-radius: 1px;
+}
+
+/* ── Right: Text Description (original background) ── */
+.description {
+  width: 380px;
+  flex-shrink: 0;
+  padding: 0 2.5rem 4rem 1.5rem;
+  border-left: 0.5px solid rgba(100, 80, 50, 0.12);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  background: #f8f6f0;
+}
+
+.description::-webkit-scrollbar {
+  width: 4px;
+}
+.description::-webkit-scrollbar-track {
+  background: transparent;
+}
+.description::-webkit-scrollbar-thumb {
+  background: rgba(100, 80, 50, 0.2);
+  border-radius: 2px;
+}
+
+.project-title {
+  font-size: 20px;
+  color: #2e2416;
+  font-weight: 400;
+  letter-spacing: 0.10em;
+  margin-bottom: 0.5rem;
+  font-family: "Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  line-height: 1.6;
+}
+
+.project-subtitle {
+  font-size: 10px;
+  color: #9a8a68;
+  letter-spacing: 0.25em;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 0.5px solid rgba(100, 80, 50, 0.15);
+}
+
+.section-text {
+  font-size: 12.5px;
+  color: #4a3a22;
+  line-height: 2.1;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.2rem;
+}
+
+/* ── Lightbox ── */
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.85);
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+}
+#lightbox.show {
+  display: flex;
+}
+#lightbox .img-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#lightbox img {
+  max-width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+  border-radius: 2px;
+  transition: transform 0.15s ease;
+}
+#lightbox .close-btn {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  font-size: 28px;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: color .2s;
+  line-height: 1;
+  z-index: 10001;
+}
+#lightbox .close-btn:hover {
+  color: #fff;
+}
+
+#lightbox .zoom-hint {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.25em;
+  pointer-events: none;
+  z-index: 10001;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+#lightbox.show .zoom-hint {
+  opacity: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    padding-top: 80px;
+  }
+  .gallery {
+    max-height: none;
+    padding: 0 1rem 1rem 1rem;
+  }
+  .gallery-item {
+    max-width: 100%;
+  }
+  .gallery-item img {
+    max-width: 100%;
+  }
+  .description {
+    width: 100%;
+    padding: 0 1.5rem 3rem 1.5rem;
+    border-left: none;
+    border-top: 0.5px solid rgba(100, 80, 50, 0.12);
+    max-height: none;
+    overflow-y: visible;
+  }
+  .back-link {
+    top: 70px;
+    left: 1rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="nc-dot"></div>
+<div id="nc-ring"></div>
+
+<div id="topnav">
+  <span class="nav-name">Zhitian</span>
+  <div class="nav-links">
+    <a href="about.html#card-section">WORK</a>
+    <a href="about.html#about-section">ABOUT</a>
+    <a href="#">CONTACT</a>
+  </div>
+</div>
+
+<a href="architecture.html" class="back-link">返回</a>
+
+<div class="container">
+
+  <!-- Left: Image Gallery -->
+  <div class="gallery-wrap">
+  <div class="gallery" id="gallery">
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版1.jpeg" alt="项目图片 1" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版2.gif" alt="项目图片 2" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版3.jpeg" alt="项目图片 3" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版4.png" alt="项目图片 4" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版5.png" alt="项目图片 5" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版6.gif" alt="项目图片 6" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版7.jpeg" alt="项目图片 7" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版8.gif" alt="项目图片 8" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版9.png" alt="项目图片 9" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版10.png" alt="项目图片 10" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item" style="max-width:300px;">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版11.jpeg" alt="项目图片 11" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目1/项目1排版12.jpeg" alt="项目图片 12" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+  </div>
+  </div>
+
+  <!-- Right: Description -->
+  <div class="description">
+    <h1 class="project-title">通向空间：连接诺里奇城市肌理的废弃地更新策略</h1>
+    <div class="project-subtitle">2025</div>
+
+    <p class="section-text">
+      项目被设计成一个在历史夹缝中生长的城市公共空间，以空间考古学的视角重塑了诺里奇一处废弃停车场的场所精神。设计从场地中的狭窄缝隙入手，让建筑体量从消极的边界空隙中生长而出，使"间隙"本身成为空间生成的原点。
+    </p>
+
+    <p class="section-text">
+      设计选用与场地历史肌理对话的材料策略，并参考当地保护区风貌的建筑语言，将碎片化的结构元素重新组织为连贯的空间秩序。针对停车场不规则的地形，研究测试了多种介入方式——采用呼应场地不规则性的碎片化结构，或基于现有混凝土板承载力的8×8米网格系统，并通过坡道与楼梯回应场地高差，激活中央区域作为公共休闲场所如公园或滑板场。从这些碎片化元素中提炼出一种具有方向性的空间秩序，使其边缘能够容纳较大体量的功能空间。
+    </p>
+
+    <p class="section-text">
+      各元素在场地中的排布形成层叠式的建筑体验，其材料与形式语言参考了当地保护区的风貌特征，同时被重新诠释为新的城市身份象征。设计优化了框架结构的开间与跨度，允许灵活布局与施工，并可选用木材等多种可再生材料实现。机电与后勤空间被整合在隐蔽的核心筒内以加固结构，便于后期维护并降低造价。
+    </p>
+
+    <p class="section-text">
+      场地中嵌入的三条原有路径作为空间骨架被保留与强化，从废弃停车场到新公共空间，设计通过一系列平剖叠加图纸和平面迭代记录了这一过程的演变。从1:150轴测图到1:50构造剖面，项目完整展示了从概念生成到技术落地的全过程。
+    </p>
+
+    <p class="section-text">
+      建筑设计赞美了历史场所中"不完美"的独特魅力——既有的树木、高差变化、建筑缝隙的随机性，皆被纳入新的空间叙事之中。项目的真正品质不在于形式的完美，而在于其对场地历史层理的尊重，以及在城市缝隙中创造有生命力的公共生活的可能性。采用可重复利用的建筑材料与被动式通风策略，回应了城市更新的可持续议题。通过将考古学思维与空间设计相结合，该项目提供了一种关于城市"空隙"再生的思辨性实践。
+    </p>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <span class="close-btn" onclick="closeLightbox()">✕</span>
+  <div class="img-wrap">
+    <img id="lightbox-img" src="" alt="查看大图">
+  </div>
+  <div class="zoom-hint">滚轮缩放 · 点击关闭</div>
+</div>
+
+<script>
+/* ── Neon cursor (matching architecture.html) ── */
+(function () {
+  const dot  = document.getElementById('nc-dot');
+  const ring = document.getElementById('nc-ring');
+
+  let mouseX = window.innerWidth  / 2;
+  let mouseY = window.innerHeight / 2;
+  let ringX  = mouseX, ringY = mouseY;
+  let visible = false;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dot.style.left = mouseX + 'px';
+    dot.style.top  = mouseY + 'px';
+    if (!visible) {
+      visible = true;
+      dot.style.opacity  = '1';
+      ring.style.opacity = '1';
+    }
+  });
+
+  (function animateRing() {
+    ringX += (mouseX - ringX) * 0.13;
+    ringY += (mouseY - ringY) * 0.13;
+    ring.style.left = ringX + 'px';
+    ring.style.top  = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  })();
+
+  document.addEventListener('mouseleave', () => {
+    dot.style.opacity  = '0';
+    ring.style.opacity = '0';
+    visible = false;
+  });
+
+  document.addEventListener('mousedown', () => {
+    dot.style.transform  = 'translate(-50%,-50%) scale(0.75)';
+    ring.style.transform = 'translate(-50%,-50%) scale(0.85)';
+  });
+  document.addEventListener('mouseup', () => {
+    dot.style.transform  = 'translate(-50%,-50%) scale(1)';
+    ring.style.transform = 'translate(-50%,-50%) scale(1)';
+  });
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      dot.style.transform    = 'translate(-50%,-50%) scale(1.6)';
+      ring.style.width       = '58px';
+      ring.style.height      = '58px';
+      ring.style.borderColor = '#1a1a1a';
+    });
+    el.addEventListener('mouseleave', () => {
+      dot.style.transform    = 'translate(-50%,-50%) scale(1)';
+      ring.style.width       = '38px';
+      ring.style.height      = '38px';
+      ring.style.borderColor = '#1a1a1a';
+    });
+  });
+})();
+
+/* ── Lightbox with zoom ── */
+var lbScale = 1;
+
+function openLightbox(src) {
+  var img = document.getElementById('lightbox-img');
+  img.src = src;
+  lbScale = 1;
+  img.style.transform = 'scale(1)';
+  document.getElementById('lightbox').classList.add('show');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('show');
+}
+
+document.getElementById('lightbox').addEventListener('wheel', function(e) {
+  e.preventDefault();
+  var img = document.getElementById('lightbox-img');
+  lbScale += e.deltaY > 0 ? -0.1 : 0.1;
+  lbScale = Math.max(0.2, Math.min(5, lbScale));
+  img.style.transform = 'scale(' + lbScale + ')';
+}, { passive: false });
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+</body>
+</html>

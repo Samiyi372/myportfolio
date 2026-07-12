@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>建筑项目 · 作品集</title>
+<style>
+@font-face {
+  font-family: "Huiwen-Fangsong";
+  src: url("../fonts/huiwen-fangsong.ttf") format("truetype");
+  font-display: swap;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #f8f6f0;
+  font-family: "Myriad Pro", Arial, "Noto Serif SC", serif;
+}
+
+body {
+  animation: fadeIn 1.2s ease both;
+  cursor: none;
+}
+
+/* ── Neon cursor ── */
+#nc-dot{
+  position:fixed;width:8px;height:8px;
+  background:#1a1a1a;border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:transform .12s ease,opacity .2s;
+}
+#nc-ring{
+  position:fixed;width:38px;height:38px;
+  border:1.5px solid #1a1a1a;border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:width .2s ease,height .2s ease,opacity .2s;
+}
+
+/* ── Top Navigation ── */
+#topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 25px 1.5625vw 0;
+  pointer-events: none;
+}
+#topnav .nav-name {
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  color: #2e2416;
+  font-weight: 400;
+  font-family: "Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  pointer-events: all;
+}
+#topnav .nav-links {
+  display: flex;
+  gap: 1.46vw;
+  pointer-events: all;
+}
+#topnav .nav-links a {
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  color: #a1a1a1;
+  text-decoration: none;
+  font-family: "Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  font-weight: 400;
+  transition: color .2s;
+}
+#topnav .nav-links a:hover { color: #2e2416; }
+
+/* ── Back Link ── */
+.back-link {
+  position: fixed;
+  top: 80px;
+  left: 1.5625vw;
+  z-index: 199;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: #9a8a68;
+  text-decoration: none;
+  transition: color .2s;
+  pointer-events: all;
+}
+.back-link:hover { color: #2e2416; }
+.back-link::before { content: "← "; }
+
+/* ── Main Layout ── */
+.container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 100px;
+}
+
+/* ── Left: Image Gallery wrapper ── */
+.gallery-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ── Left: Image Gallery (white background) ── */
+.gallery {
+  width: 760px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 80px 4rem 80px;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  scroll-behavior: smooth;
+  background: #ffffff;
+}
+
+.gallery::before {
+  content: "";
+  display: block;
+  min-height: calc((100vh - 100px - 600px) / 2 + 80px);
+  flex-shrink: 0;
+}
+
+.gallery::-webkit-scrollbar {
+  width: 4px;
+}
+.gallery::-webkit-scrollbar-track {
+  background: transparent;
+}
+.gallery::-webkit-scrollbar-thumb {
+  background: rgba(100, 80, 50, 0.2);
+  border-radius: 2px;
+}
+
+.gallery-item {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 2.5rem;
+  flex-shrink: 0;
+}
+
+.gallery-item img {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  display: block;
+  border-radius: 1px;
+}
+
+/* ── Right: Text Description (original background) ── */
+.description {
+  width: 380px;
+  flex-shrink: 0;
+  padding: 0 2.5rem 4rem 1.5rem;
+  border-left: 0.5px solid rgba(100, 80, 50, 0.12);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  background: #f8f6f0;
+}
+
+.description::-webkit-scrollbar {
+  width: 4px;
+}
+.description::-webkit-scrollbar-track {
+  background: transparent;
+}
+.description::-webkit-scrollbar-thumb {
+  background: rgba(100, 80, 50, 0.2);
+  border-radius: 2px;
+}
+
+.project-title {
+  font-size: 20px;
+  color: #2e2416;
+  font-weight: 400;
+  letter-spacing: 0.10em;
+  margin-bottom: 0.5rem;
+  font-family: "Huiwen-Fangsong","汇文仿宋","HuiWenFangSong","FZFangSong-Z02",fangsong,serif;
+  line-height: 1.6;
+}
+
+.project-subtitle {
+  font-size: 10px;
+  color: #9a8a68;
+  letter-spacing: 0.25em;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 0.5px solid rgba(100, 80, 50, 0.15);
+}
+
+.section-text {
+  font-size: 12.5px;
+  color: #4a3a22;
+  line-height: 2.1;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.2rem;
+}
+
+/* ── Lightbox ── */
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.85);
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+}
+#lightbox.show {
+  display: flex;
+}
+#lightbox .img-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#lightbox img {
+  max-width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+  border-radius: 2px;
+  transition: transform 0.15s ease;
+}
+#lightbox .close-btn {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  font-size: 28px;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: color .2s;
+  line-height: 1;
+  z-index: 10001;
+}
+#lightbox .close-btn:hover {
+  color: #fff;
+}
+
+#lightbox .zoom-hint {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.25em;
+  pointer-events: none;
+  z-index: 10001;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+#lightbox.show .zoom-hint {
+  opacity: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    padding-top: 80px;
+  }
+  .gallery {
+    max-height: none;
+    padding: 0 1rem 1rem 1rem;
+  }
+  .gallery-item {
+    max-width: 100%;
+  }
+  .gallery-item img {
+    max-width: 100%;
+  }
+  .description {
+    width: 100%;
+    padding: 0 1.5rem 3rem 1.5rem;
+    border-left: none;
+    border-top: 0.5px solid rgba(100, 80, 50, 0.12);
+    max-height: none;
+    overflow-y: visible;
+  }
+  .back-link {
+    top: 70px;
+    left: 1rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="nc-dot"></div>
+<div id="nc-ring"></div>
+
+<div id="topnav">
+  <span class="nav-name">Zhitian</span>
+  <div class="nav-links">
+    <a href="about.html#card-section">WORK</a>
+    <a href="about.html#about-section">ABOUT</a>
+    <a href="#">CONTACT</a>
+  </div>
+</div>
+
+<a href="architecture.html" class="back-link">返回</a>
+
+<div class="container">
+
+  <!-- Left: Image Gallery -->
+  <div class="gallery-wrap">
+  <div class="gallery" id="gallery">
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_01.png" alt="项目图片 1" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_02.png" alt="项目图片 2" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_03.png" alt="项目图片 3" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版 2_页面_03.1.png" alt="项目图片 3.1" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版 2_页面_03.2.png" alt="项目图片 3.2" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_04.jpeg" alt="项目图片 4" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版 2_页面_04.1.png" alt="项目图片 4.1" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_05.png" alt="项目图片 5" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_06.png" alt="项目图片 6" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_07.png" alt="项目图片 7" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item" style="max-width:300px;">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_08.jpeg" alt="项目图片 8" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item" style="max-width:300px;">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_09.jpeg" alt="项目图片 9" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_10.png" alt="项目图片 10" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_11.png" alt="项目图片 11" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版 2_页面_11.1.png" alt="项目图片 11.1" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版 2_页面_11.2.png" alt="项目图片 11.2" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="gallery-item">
+      <img src="../作品集相关图片/建筑/项目3/项目3排版_页面_12.gif" alt="项目图片 12" loading="lazy" onclick="openLightbox(this.src)">
+    </div>
+
+  </div>
+  </div>
+
+  <!-- Right: Description -->
+  <div class="description">
+    <h1 class="project-title">剑桥市民博物馆：市政厅的公共性再造</h1>
+    <div class="project-subtitle">2024</div>
+
+    <p class="section-text">
+      项目"剑桥市民博物馆"围绕"空间即展品"的理念展开，将视线从菲茨威廉博物馆的馆藏内部转向剑桥市政厅这一城市公共建筑本身。项目试图回答一个根本性的问题：一座城市的博物馆，是否必须被限定在特定的建筑边界之内？设计以"重新分配博物馆"为策略，将市政厅改造为一座向所有市民敞开的城市展馆，让剑桥的历史与当下在城市的日常脉搏中交汇。
+    </p>
+
+    <p class="section-text">
+      设计的起点是对市政厅与市集广场之间关系的重新审视。这座建筑占据了广场一侧的显著位置，但其厚重的立面与封闭的底层界面却将自身与城市的公共生活割裂开来。项目提出将市政厅的底层立面打开，以连续的玻璃界面替代原有的实墙，在建筑与广场之间建立起直接而透明的视觉连接。市民得以从广场望见建筑内部的展览活动，参观者也得以在展厅内回望广场上往来的人流——建筑不再是一座孤立的纪念物，而成为城市公共生活的取景框。
+    </p>
+
+    <p class="section-text">
+      设计的中枢是一系列围绕采光井展开的空间干预。现有的采光井原本只是建筑内部被遗忘的垂直空隙，项目却将其转化为整个体验的核心锚点。雨水，这座以"剑桥"为名的城市最日常的自然元素被引入采光井之中，经由当地石材的层层跌水，形成一座时间的瀑布亭。滴落的水流在静谧的砖井中回响，将看不见的时间转化为可感知的声音与触觉。围绕采光井的走廊被改造为环形展厅，展品悬置于玻璃窗的另一侧，观众在行走中得以从不同高度、不同角度与艺术品相遇。空间的深度，由此转化为观看的景深。
+    </p>
+
+    <p class="section-text">
+      在底层，设计开辟了一处"雨水画廊"，将室外的自然元素引入室内。玻璃天窗将变幻的天光投射在展厅地面上，雨滴敲击玻璃的声音成为空间持续的配乐。沿墙设置的凹龛为参观者提供了可退避的休憩角落。从亲密的独处到偶然的交谈，空间的尺度在开放与包裹之间自如切换。延续此前学期对触觉体验的研究，新设计的扶手在延续触觉导览功能的同时，加入了模仿水流形态的肌理，让视障参观者通过指尖感受这座城市的雨与河。
+    </p>
+
+    <p class="section-text">
+      项目的深层野心在于重新定义"博物馆"的边界。附录中记录的剑桥藏品，从中世纪的陶罐到玛格达琳·奥顿多的当代陶艺，从克拉拉·克林霍夫笔下的肖像到格温多伦·拉弗拉特描绘的剑河撑篙，并非被迁入市政厅，而是通过一幅幅新绘制的"剑桥藏品地图"，提示着整座城市本身就是一座没有围墙的博物馆。从菲茨威廉博物馆到凯特尔庭院，从基督学院的纪念碑到市集广场的日常喧嚷，每一处地点都是一件展品，每一次行走都是一次观展。"剑桥市民博物馆"最终呈现的是一种新的目光。它邀请市民与访客重新看见市政厅——不是作为权力的象征或历史的遗存，而是作为日常生活的容器、公共交往的场所、感官体验的现场。
+    </p>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <span class="close-btn" onclick="closeLightbox()">✕</span>
+  <div class="img-wrap">
+    <img id="lightbox-img" src="" alt="查看大图">
+  </div>
+  <div class="zoom-hint">滚轮缩放 · 点击关闭</div>
+</div>
+
+<script>
+/* ── Neon cursor (matching architecture.html) ── */
+(function () {
+  const dot  = document.getElementById('nc-dot');
+  const ring = document.getElementById('nc-ring');
+
+  let mouseX = window.innerWidth  / 2;
+  let mouseY = window.innerHeight / 2;
+  let ringX  = mouseX, ringY = mouseY;
+  let visible = false;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dot.style.left = mouseX + 'px';
+    dot.style.top  = mouseY + 'px';
+    if (!visible) {
+      visible = true;
+      dot.style.opacity  = '1';
+      ring.style.opacity = '1';
+    }
+  });
+
+  (function animateRing() {
+    ringX += (mouseX - ringX) * 0.13;
+    ringY += (mouseY - ringY) * 0.13;
+    ring.style.left = ringX + 'px';
+    ring.style.top  = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  })();
+
+  document.addEventListener('mouseleave', () => {
+    dot.style.opacity  = '0';
+    ring.style.opacity = '0';
+    visible = false;
+  });
+
+  document.addEventListener('mousedown', () => {
+    dot.style.transform  = 'translate(-50%,-50%) scale(0.75)';
+    ring.style.transform = 'translate(-50%,-50%) scale(0.85)';
+  });
+  document.addEventListener('mouseup', () => {
+    dot.style.transform  = 'translate(-50%,-50%) scale(1)';
+    ring.style.transform = 'translate(-50%,-50%) scale(1)';
+  });
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      dot.style.transform    = 'translate(-50%,-50%) scale(1.6)';
+      ring.style.width       = '58px';
+      ring.style.height      = '58px';
+      ring.style.borderColor = '#1a1a1a';
+    });
+    el.addEventListener('mouseleave', () => {
+      dot.style.transform    = 'translate(-50%,-50%) scale(1)';
+      ring.style.width       = '38px';
+      ring.style.height      = '38px';
+      ring.style.borderColor = '#1a1a1a';
+    });
+  });
+})();
+
+/* ── Lightbox with zoom ── */
+var lbScale = 1;
+
+function openLightbox(src) {
+  var img = document.getElementById('lightbox-img');
+  img.src = src;
+  lbScale = 1;
+  img.style.transform = 'scale(1)';
+  document.getElementById('lightbox').classList.add('show');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('show');
+}
+
+document.getElementById('lightbox').addEventListener('wheel', function(e) {
+  e.preventDefault();
+  var img = document.getElementById('lightbox-img');
+  lbScale += e.deltaY > 0 ? -0.1 : 0.1;
+  lbScale = Math.max(0.2, Math.min(5, lbScale));
+  img.style.transform = 'scale(' + lbScale + ')';
+}, { passive: false });
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+</body>
+</html>

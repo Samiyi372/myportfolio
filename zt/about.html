@@ -766,6 +766,7 @@ body { cursor: none; }
     <div class="paper" id="p0"><img src="../网页图片素材/纸片1.svg" alt="交互设计"></div>
     <div class="paper" id="p1"><img src="../网页图片素材/纸片2.svg" alt="实体产品"></div>
     <div class="paper" id="p2"><img src="../网页图片素材/纸片3.svg" alt="视觉创作"></div>
+    <div class="paper" id="p3"><img src="../网页图片素材/纸片4.png" alt="建筑设计"></div>
   </div>
 
 </section>
@@ -853,9 +854,10 @@ const CARD_W = 210;
 const CARD_H = 315;
 
 const CONFIG = [
-  { id: 'p0', baseX: -280 },
-  { id: 'p1', baseX:    0 },
-  { id: 'p2', baseX:  280 },
+  { id: 'p0', baseX: -420 },
+  { id: 'p1', baseX: -140 },
+  { id: 'p2', baseX:  140 },
+  { id: 'p3', baseX:  420 },
 ];
 
 // 运动参数
@@ -871,10 +873,12 @@ const paperSfx = [
   new Audio('../交互音频素材/音效2.m4a'),
   new Audio('../交互音频素材/音效3.m4a'),
   new Audio('../交互音频素材/纸片3.m4a'),
+  new Audio('../交互音频素材/纸片2.m4a'),
 ];
 paperSfx[0].volume = 0.8;
 paperSfx[1].volume = 0.8;
-const paperSfxBaseVol = [0.8, 0.8, 1];
+paperSfx[3].volume = 0.8;
+const paperSfxBaseVol = [0.8, 0.8, 1, 0.8];
 
 const papers = CONFIG.map((cfg) => {
   const el = document.getElementById(cfg.id);
@@ -904,7 +908,7 @@ function layoutPapers() {
 function layoutCardSection() {
   const cs = document.getElementById('card-section');
   if (isNarrowCards()) {
-    cs.style.height   = `${STACK_TOP_PAD + 3 * CARD_H + 2 * STACK_GAP + STACK_BOTTOM_PAD}px`;
+    cs.style.height   = `${STACK_TOP_PAD + 4 * CARD_H + 3 * STACK_GAP + STACK_BOTTOM_PAD}px`;
     cs.style.overflow = 'visible';
   } else {
     cs.style.height   = '';
@@ -973,6 +977,13 @@ papers.forEach((p, i) => {
   if (i === 2) {
     p.el.addEventListener('click', () => {
       window.location.href = 'illustration.html';
+    });
+  }
+
+  // 纸片4 → 跳转建筑设计页
+  if (i === 3) {
+    p.el.addEventListener('click', () => {
+      window.location.href = 'architecture.html';
     });
   }
 });
